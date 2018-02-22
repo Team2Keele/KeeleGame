@@ -1,86 +1,71 @@
 package com.team2.pacman.framework;
 
+import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 
-
 public abstract class Entity {
 
-    private Point position;
-    private Point velocity;
-    private Point size;
-    private boolean active;
-    private Sprite sprite;
-    private Rectangle bBox;
+    protected Point position;
+    protected Point velocity;
+    protected Point size;
+    protected boolean active;
+    protected Sprite sprite;
+    protected Rectangle bBox;
 
-    public Entity(){
-        
+    public Entity(Point position) {
+        this.position = position;
     }
+
+    public abstract void update();
+    public abstract void render(Graphics g);
+    public abstract boolean isColliding(Tile tile);
+    public abstract boolean isColliding(Entity entity);
+    public abstract void collide(Tile tile);
+    public abstract void collide(Entity entity);
     
-    public void update(){
-        
-    }
     
-    public void render(){
-        
-    }
-    
-    public void activate(){
+    public void activate() {
         active = true;
     }
-    
-    public void deactivate(){
+
+    public void deactivate() {
         active = false;
     }
-    
-    public boolean getActive(){
+
+    public boolean getActive() {
         return active;
     }
-    
-    public void setVelocity(Point newVel){
+
+    public void setVelocity(Point newVel) {
         velocity = newVel;
     }
-    
-    public Point getVelocity(){
+
+    public Point getVelocity() {
         return velocity;
     }
-    
-    public void setPosition(Point newPos){
+
+    public void setPosition(Point newPos) {
         position = newPos;
     }
-    
-    public Point getPosition(){
+
+    public Point getPosition() {
         return position;
     }
-    
-    public boolean isColliding(Tile tile){
-        return false;
-    }
-    
-    public boolean isColliding(Entity entity){
-        return false;
-    }
-    
-    public void collide(Tile tile){
-        
-    }
-    
-    public void collide(Entity entity){
-        
-    }
-    
-    public void setSprite(Sprite newSprite){
+
+    public void setSprite(Sprite newSprite) {
         sprite = newSprite;
     }
-    
-    public Sprite getSprite(){
+
+    public Sprite getSprite() {
         return sprite;
     }
-    
-    public void setSize(Point newSize){
+
+    public void setSize(Point newSize) {
         size = newSize;
     }
-    public Point getSize(){
+
+    public Point getSize() {
         return size;
     }
 }
