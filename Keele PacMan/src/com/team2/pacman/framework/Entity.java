@@ -33,6 +33,10 @@ public abstract class Entity {
         active = false;
     }
     
+    public boolean getActive(){
+        return active;
+    }
+    
     public void setVelocity(Point newVel){
         velocity = newVel;
     }
