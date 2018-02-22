@@ -1,13 +1,14 @@
 package com.team2.pacman.framework;
 
+import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.geom.Point2D;
+
 
 public abstract class Entity {
 
-    private Point2D position;
-    private Point2D velocity;
-    private Point2D size;
+    private Point position;
+    private Point velocity;
+    private Point size;
     private boolean active;
     private Sprite sprite;
     private Rectangle bBox;
@@ -32,19 +33,19 @@ public abstract class Entity {
         active = false;
     }
     
-    public void setVelocity(Point2D newVel){
+    public void setVelocity(Point newVel){
         velocity = newVel;
     }
     
-    public Point2D getVelocity(){
+    public Point getVelocity(){
         return velocity;
     }
     
-    public void setPosition(Point2D newPos){
+    public void setPosition(Point newPos){
         position = newPos;
     }
     
-    public Point2D getPosition(){
+    public Point getPosition(){
         return position;
     }
     
@@ -52,4 +53,30 @@ public abstract class Entity {
         return false;
     }
     
+    public boolean isColliding(Entity entity){
+        return false;
+    }
+    
+    public void collide(Tile tile){
+        
+    }
+    
+    public void collide(Entity entity){
+        
+    }
+    
+    public void setSprite(Sprite newSprite){
+        sprite = newSprite;
+    }
+    
+    public Sprite getSprite(){
+        return sprite;
+    }
+    
+    public void setSize(Point newSize){
+        size = newSize;
+    }
+    public Point getSize(){
+        return size;
+    }
 }

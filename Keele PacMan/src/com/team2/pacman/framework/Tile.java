@@ -1,5 +1,5 @@
 package com.team2.pacman.framework;
 
-class Tile {
+public class Tile {
 
 }
