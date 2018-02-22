@@ -8,9 +8,13 @@ import java.awt.image.BufferStrategy;
 public class Game extends Canvas implements Runnable {
 
     public static final String VERSION = "0.1a";    //Keele PacMan game version
-
+    public GameState state = GameState.START;
+    
     private boolean running = false;    //State of the game thread
     private Thread thread;              //Game thread
+    
+    
+    
 
     public synchronized void start() {
         //Stops making multiple threads of one that is already running
@@ -54,12 +58,23 @@ public class Game extends Canvas implements Runnable {
                 updates = 0;
                 frames = 0;
             }
-
         }
-
     }
 
     private void update() {
+        if(null != state) //TODO handle the changes of game states and the updates of every tick of each entity and collision
+        
+        switch (state) {
+            case START: //handle the start of the game / menu stuff
+                break;
+        
+            case RUNNING: //normal game loop
+                break;
+            case END: //handle the finishing of the game / win or lose.
+                break;
+            default:
+                break;
+        }
     }
 
     private void render() {
@@ -78,6 +93,17 @@ public class Game extends Canvas implements Runnable {
         
         g.dispose();
         bs.show();
+    }
+    
+    public void reset(){
+        //TODO handle all value resets here: player lives, score, enemy, map, timer, powerups... everything.
+        
+        //set the game state to start again
+        changeState(GameState.START);
+    }
+    
+    public void changeState(GameState newState){
+        state = newState;
     }
 
     public static void main(String args[]) {
