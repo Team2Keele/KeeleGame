@@ -11,7 +11,6 @@ public class Tile {
     
     private TileType type;
     private Point gridIndex;
-    private Map tileMap;
     private Entity collectable;
     
     public Tile(Point index, TileType type, Entity collectable) 
