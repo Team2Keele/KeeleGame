@@ -6,6 +6,7 @@
 package com.team2.pacman.framework;
 import java.awt.Graphics;
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -38,11 +39,9 @@ public class Map
         String line = null;
 
         try {
-            FileReader fileReader = 
-                new FileReader(mapFile);
+            FileReader fileReader = new FileReader(mapFile);
 
-            BufferedReader br = 
-                new BufferedReader(fileReader);
+            BufferedReader br = new BufferedReader(fileReader);
             
             String sizeLine = br.readLine();
             int xSize = Integer.parseInt(sizeLine.split(" ")[0]);
@@ -68,6 +67,7 @@ public class Map
                         type = TileType.WALL;
                     }
                     
+                    //chance to place a powerup rather than an acorn
                     if(rand.nextFloat() > 0.95)
                     {
                         //blocked by Powerup class
@@ -96,6 +96,43 @@ public class Map
                 "Error reading file '" 
                 + mapFile + "'");                  
         }
+    }
+    
+    public Tile getTileAdjacentUp(Tile tile) 
+    {
+        return getTile(tile.getGridIndex().x, tile.getGridIndex().y - 1);
+    }
+    
+    public Tile getTileAdjacentDown(Tile tile) 
+    {
+        return getTile(tile.getGridIndex().x, tile.getGridIndex().y + 1);
+    }
+    
+    public Tile getTileAdjacentLeft(Tile tile) 
+    {
+        return getTile(tile.getGridIndex().x - 1, tile.getGridIndex().y);
+    }
+    
+    public Tile getTileAdjacentRight(Tile tile) 
+    {
+        return getTile(tile.getGridIndex().x + 1, tile.getGridIndex().y);
+    }
+    
+    public boolean isTileJunction(Tile tile) 
+    {
+        boolean leftWall = getTileAdjacentLeft(tile).isWall();
+        boolean rightWall = getTileAdjacentRight(tile).isWall();
+        boolean upWall = getTileAdjacentUp(tile).isWall();
+        boolean downWall = getTileAdjacentDown(tile).isWall();
+        
+        return !((leftWall && rightWall) || (upWall && downWall));
+    }
+    
+    public Rectangle2D.Float getBoundingBox(Tile tile)
+    {
+        float[] coord = {tile.getGridIndex().x * tileSize, tile.getGridIndex().y * tileSize};
+        
+        return new Rectangle2D.Float(coord[0], coord[1], tileSize, tileSize);
     }
     
     public void setBackground(Sprite image)
