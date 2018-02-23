@@ -9,7 +9,6 @@ public class Tile {
     private boolean isWall;
     private boolean isEdge;
     private int[] gridIndex = new int[2];
-    private Map tileMap;
     private Entity collectable;
     
     public void Tile(Map tileMap, int xCoord, int yCoord, boolean isWall, boolean isEdge, Entity collectable) {
