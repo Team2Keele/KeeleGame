@@ -10,6 +10,7 @@ import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.Random;
 /**
  *
  * @author elliott
@@ -48,13 +49,35 @@ public class Map
             int ySize = Integer.parseInt(sizeLine.split(" ")[1]);
             grid = new Tile[xSize][ySize];
             
+            TileType type = TileType.NONE;
+            
+            Random rand = new Random();
+            
             int x = 0;
             while((line = br.readLine()) != null) 
             {
                 for(int y = 0; y < line.length(); y++)
                 {
-                    //TODO: blocked by Tile class not being completed
-                    grid[x][y] = new Tile();
+                    if(x == xSize || x == 0 || y == ySize || y == 0)
+                    {
+                        type = TileType.EDGE;
+                    }
+                    
+                    if(line.charAt(y) == '0')
+                    {
+                        type = TileType.WALL;
+                    }
+                    
+                    if(rand.nextFloat() > 0.95)
+                    {
+                        //blocked by Powerup class
+                        //grid[x][y] = new Tile(this, new Point(x, y), type, new Powerup(PowerType.getRandomPower()));
+                    }
+                    else
+                    {
+                        //blocked by Acorn class
+                        //grid[x][y] = new Tile(this, new Point(x, y), type, new Acorn());
+                    }
                 }
                 x++;
             }   
