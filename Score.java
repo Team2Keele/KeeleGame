@@ -3,8 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package ocr;
-
+package com.team2.pacman.framework;
 
 public class Score {
     
@@ -13,7 +12,7 @@ public class Score {
     
     private void increment(int points) {
         score = score + points;
-        
+
     }
     
     private void decrement(int points) {
@@ -30,18 +29,9 @@ public class Score {
        multi = setMulti;
        
    }
-   
 
-   
-    
    private void reset() {
-       score = 0;
-       
+       score = 0;    
    }
    
-    
-    
-    
-    
-    
 }
