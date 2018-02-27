@@ -1,8 +1,4 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package com.team2.pacman.framework;
 
 public class Score {
@@ -12,7 +8,6 @@ public class Score {
     
     private void increment(int points) {
         score = score + points;
-
     }
     
     private void decrement(int points) {
@@ -26,12 +21,10 @@ public class Score {
     }
     
    private void setMulti(float setMulti) { //passed the score multiplier, 
-       multi = setMulti;
-       
+       multi = setMulti;    
    }
-
+   
    private void reset() {
        score = 0;    
    }
-   
 }

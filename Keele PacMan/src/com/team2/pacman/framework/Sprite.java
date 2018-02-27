@@ -3,18 +3,12 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package Sprite;
+package com.team2.pacman.framework;
 
 import java.awt.image.BufferedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
 
-/**
- *
- * @author Adam
- */
 public class Sprite {
 
     private int spriteState = 1;
@@ -47,7 +41,5 @@ public class Sprite {
             //sprite = img.getSubimage(x, y, img.getWidth/<however many images>, img.getHeight());
         }
         return sprite;
-
     }
-
 }
