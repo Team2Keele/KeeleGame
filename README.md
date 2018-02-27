@@ -1,5 +1,4 @@
 # KeeleGame
-===========
 
 ## This game is a 2D top down arcade game, with a keele theme.
 
