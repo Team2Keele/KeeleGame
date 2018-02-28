@@ -12,10 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.Random;
-/**
- *
- * @author elliott
- */
+
 public class Map 
 {
     private Tile[][] grid;
