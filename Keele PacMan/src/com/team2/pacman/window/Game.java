@@ -13,18 +13,14 @@ public class Game extends Canvas implements Runnable {
 
     private boolean running = false;    //State of the game thread
     private Thread thread;              //Game thread
-<<<<<<< HEAD
-=======
 
-    
     /*Testing map and sprites rendering abilities*/
     private Map map1;
-    private Sprite testSprite1 = new Sprite("\\\\ufs.stf.keele.ac.uk\\homes\\My Documents\\NetBeansProjects\\KeeleGame-master\\Keele PacMan\\src\\com\\team2\\pacman\\res\\spriteTest.png", 16, 2);
+    private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
 
     public Game() {
         this.map1 = new Map(16f);
     }
->>>>>>> 6a4c6bdfb6a08e9b0841d2bdfefb07a155082297
 
     public synchronized void start() {
         //Stops making multiple threads of one that is already running
@@ -72,9 +68,8 @@ public class Game extends Canvas implements Runnable {
     }
 
     private void update() {
-<<<<<<< HEAD
-        //TODO handle the changes of game states and the updates of every tick of each entity and collision
 
+        //TODO handle the changes of game states and the updates of every tick of each entity and collision
         switch (state) {
             case START: //handle the start of the game / menu stuff
                 break;
@@ -84,22 +79,6 @@ public class Game extends Canvas implements Runnable {
                 break;
             default:
                 break;
-=======
-        if (null != state) //TODO handle the changes of game states and the updates of every tick of each entity and collision
-        {
-            switch (state) {
-                case START: //handle the start of the game / menu stuff
-                 
-                    break;
-
-                case RUNNING: //normal game loop
-                    break;
-                case END: //handle the finishing of the game / win or lose.
-                    break;
-                default:
-                    break;
-            }
->>>>>>> 6a4c6bdfb6a08e9b0841d2bdfefb07a155082297
         }
     }
 
@@ -116,13 +95,10 @@ public class Game extends Canvas implements Runnable {
         g.setColor(Color.black);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
-<<<<<<< HEAD
-=======
         //draw map
         map1.render(g);
         testSprite1.render(g, testSprite1.getCurrentFrame(), 200, 200);
-        
->>>>>>> 6a4c6bdfb6a08e9b0841d2bdfefb07a155082297
+
         g.dispose();
         bs.show();
     }
@@ -143,14 +119,6 @@ public class Game extends Canvas implements Runnable {
     }
 
     public enum GameState {
-<<<<<<< HEAD
         START, RUNNING, END
     }
-=======
-        START,
-        RUNNING,
-        END
-    }
-
->>>>>>> 6a4c6bdfb6a08e9b0841d2bdfefb07a155082297
 }

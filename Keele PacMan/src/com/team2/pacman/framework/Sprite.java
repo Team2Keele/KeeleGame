@@ -9,6 +9,7 @@ import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
+import java.net.URL;
 import javax.imageio.ImageIO;
 
 public class Sprite {
@@ -41,7 +42,8 @@ public class Sprite {
     //returns true if the spritesheet was found, false if not.
     private boolean loadImage(String fileName) {
         try {
-            image = ImageIO.read(new File(fileName));
+            URL path = Sprite.class.getResource("../res/" + fileName);
+            image = ImageIO.read(path);
         } catch (IOException e) {
             System.out.println(e + "\nImage cannot be found!\n");
             return false;

@@ -26,7 +26,7 @@ public class Map {
 
     public Map(float tileSize) {
         grid = new Tile[0][0];
-        bgImage = new Sprite("\\\\ufs.stf.keele.ac.uk\\homes\\My Documents\\NetBeansProjects\\KeeleGame-master\\Keele PacMan\\src\\com\\team2\\pacman\\res\\map.png");
+        bgImage = new Sprite("map.png");
         this.tileSize = tileSize;
     }
 
