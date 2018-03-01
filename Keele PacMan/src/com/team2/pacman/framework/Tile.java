@@ -1,7 +1,12 @@
 package com.team2.pacman.framework;
 
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 
+/**
+ *
+ * @author Herbie Bradley
+ */
 public class Tile {
 
     private TileType type;
