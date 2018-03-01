@@ -7,26 +7,33 @@ import java.awt.geom.Rectangle2D;
 public abstract class Entity {
 
     protected Map tileMap;
-    protected Point position;
-    protected Point velocity;
+    protected Point.Float position;
+    protected Point.Float velocity;
     protected Point size;
+    protected float velocityMag;
     protected boolean active;
     protected Sprite sprite;
 
-    public Entity(Map map, Point position, Point size) 
+    public Entity(Map map, Point.Float position, Point size) 
     {
-        this.position = position;
+        position = position;
         this.size = size;
         tileMap = map;
+        velocity = new Point.Float(1, 1);
+        velocityMag = 0;
     }
-
-    public abstract void update();
-    public abstract void collide(Tile tile);
-    public abstract void collide(Entity entity);
     
     public void render(Graphics g)
     {
         //TODO: render sprite image for entity, blocked by sprite.
+    }
+    
+    public void update()
+    {
+        position.x += velocity.x;
+        position.y += velocity.y;
+        
+        sprite.nextFrame();
     }
     
     public boolean isColliding(Tile tile)
@@ -73,22 +80,22 @@ public abstract class Entity {
         return active;
     }
 
-    public void setVelocity(Point newVel) 
+    public void setVelocity(Point.Float newVel) 
     {
         velocity = newVel;
     }
 
-    public Point getVelocity() 
+    public Point.Float getVelocity() 
     {
         return velocity;
     }
 
-    public void setPosition(Point newPos) 
+    public void setPosition(Point.Float newPos) 
     {
         position = newPos;
     }
 
-    public Point getPosition() 
+    public Point.Float getPosition() 
     {
         return position;
     }
@@ -111,5 +118,15 @@ public abstract class Entity {
     public Point getSize() 
     {
         return size;
+    }
+    
+    public float getVelocityMag()
+    {
+        return velocityMag;
+    }
+    
+    public void setVelocityMag(float newMag)
+    {
+        velocityMag = newMag;
     }
 }
