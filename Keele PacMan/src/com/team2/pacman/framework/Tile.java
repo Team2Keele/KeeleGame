@@ -3,35 +3,30 @@ package com.team2.pacman.framework;
 import java.awt.Point;
 
 public class Tile {
-    
+
     private TileType type;
     private Point gridIndex;
     private Entity collectable;
-    
-    public Tile(Point index, TileType type, Entity collectable) 
-    {
+
+    public Tile(Point index, TileType type, Entity collectable) {
         gridIndex = index;
         this.type = type;
         this.collectable = collectable;
     }
-    
-    public Entity getCollectable() 
-    {
+
+    public Entity getCollectable() {
         return collectable;
     }
-    
-    public boolean isWall() 
-    {
+
+    public boolean isWall() {
         return type == TileType.WALL;
     }
-    
-    public boolean isEdge() 
-    {
+
+    public boolean isEdge() {
         return type == TileType.EDGE;
     }
-    
-    public Point getGridIndex()
-    {
+
+    public Point getGridIndex() {
         return gridIndex;
     }
 }
