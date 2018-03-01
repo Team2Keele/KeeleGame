@@ -9,6 +9,7 @@ package com.team2.pacman.framework;
  *
  * @author elliott
  */
-public class Player {
+public class Player extends Entity
+{
     
 }
