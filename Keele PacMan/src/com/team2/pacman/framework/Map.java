@@ -145,12 +145,6 @@ public class Map
         return grid[xIndex][yIndex];
     }
     
-    public void clearMap()
-    {
-        grid = new Tile[0][0];
-        bgImage = new Sprite();
-    }
-    
     public Point getGridSize()
     {
         return new Point(grid.length, grid[0].length);
