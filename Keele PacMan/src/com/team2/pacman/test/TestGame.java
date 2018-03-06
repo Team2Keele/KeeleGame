@@ -1,12 +1,14 @@
-package com.team2.pacman.window;
+package com.team2.pacman.test;
 
 import com.team2.pacman.framework.*;
+import com.team2.pacman.window.Window;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Point;
 import java.awt.image.BufferStrategy;
 
-public class Game extends Canvas implements Runnable {
+public class TestGame extends Canvas implements Runnable {
 
     public static final String VERSION = "0.1a";    //Keele PacMan game version
     public GameState state = GameState.START;
@@ -14,8 +16,15 @@ public class Game extends Canvas implements Runnable {
     private boolean running = false;    //State of the game thread
     private Thread thread;              //Game thread
 
-    public Game() {
+    /*Testing map and sprites rendering abilities*/
+    private Map map1;
+    private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
+    private Player testP1 = new Player(map1, new Point.Float(100, 100), new Point(10, 10));
 
+    public TestGame() {
+        this.map1 = new Map(16f);
+        testP1.setSpeed(1);
+        testP1.turnDown();
     }
 
     public synchronized void start() {
@@ -68,6 +77,7 @@ public class Game extends Canvas implements Runnable {
         //TODO handle the changes of game states and the updates of every tick of each entity and collision
         switch (state) {
             case START: //handle the start of the game / menu stuff
+                testP1.update();
                 break;
             case RUNNING: //normal game loop
                 break;
@@ -91,6 +101,11 @@ public class Game extends Canvas implements Runnable {
         g.setColor(Color.black);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
+        //draw map
+        map1.render(g);
+        testSprite1.render(g, testSprite1.getCurrentFrame(), 200, 200);
+        testP1.render(g);
+
         g.dispose();
         bs.show();
     }
@@ -107,7 +122,7 @@ public class Game extends Canvas implements Runnable {
     }
 
     public static void main(String args[]) {
-        Window window = new Window(800, 600, "Keele PacMan ver: " + VERSION, new Game());
+        TestWindow window = new TestWindow(800, 600, "Keele PacMan ver: " + VERSION, new TestGame());
     }
 
     public enum GameState {

@@ -22,16 +22,15 @@ public class Map
     private Sprite bgImage;
     private float tileSize;
     
-    Map(float tileSize)
+    public Map(float tileSize)
     {
         grid = new Tile[0][0];
-        bgImage = new Sprite();
         this.tileSize = tileSize;
     }
     
     public void render(Graphics g)
     {
-        //TODO: blocked by Sprite being unfinished
+        bgImage.render(g, bgImage.getCurrentFrame(), 0, 0);
     }
     
     public void loadMap(String mapFile)
