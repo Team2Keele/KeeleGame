@@ -1,7 +1,6 @@
 package com.team2.pacman.test;
 
 import com.team2.pacman.framework.*;
-import com.team2.pacman.window.Window;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
