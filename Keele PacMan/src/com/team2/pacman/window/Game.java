@@ -14,8 +14,12 @@ public class Game extends Canvas implements Runnable {
     private boolean running = false;    //State of the game thread
     private Thread thread;              //Game thread
 
-    public Game() {
+    /*Testing map and sprites rendering abilities*/
+    private Map map1;
+    private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
 
+    public Game() {
+        this.map1 = new Map(16f);
     }
 
     public synchronized void start() {
@@ -90,6 +94,10 @@ public class Game extends Canvas implements Runnable {
         //Draw Everything here
         g.setColor(Color.black);
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
+
+        //draw map
+        map1.render(g);
+        testSprite1.render(g, testSprite1.getCurrentFrame(), 200, 200);
 
         g.dispose();
         bs.show();

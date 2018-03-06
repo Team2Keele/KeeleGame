@@ -16,9 +16,8 @@ public abstract class Entity {
 
     public Entity(Map map, Point.Float position, Point size) 
     {
-        this.position = position;
+        position = position;
         this.size = size;
-        sprite = new Sprite("default.png", 16, 1);
         tileMap = map;
         velocity = new Point.Float(1, 1);
         velocityMag = 0;
@@ -26,7 +25,7 @@ public abstract class Entity {
     
     public void render(Graphics g)
     {
-        sprite.render(g, sprite.getCurrentFrame(), (int)position.x, (int)position.y);
+        //TODO: render sprite image for entity, blocked by sprite.
     }
     
     public void update()
@@ -81,6 +80,11 @@ public abstract class Entity {
         return active;
     }
 
+    public void setVelocity(Point.Float newVel) 
+    {
+        velocity = newVel;
+    }
+
     public Point.Float getVelocity() 
     {
         return velocity;
@@ -116,13 +120,13 @@ public abstract class Entity {
         return size;
     }
     
-    public float getSpeed()
+    public float getVelocityMag()
     {
         return velocityMag;
     }
     
-    public void setSpeed(float newSpeed)
+    public void setVelocityMag(float newMag)
     {
-        velocityMag = newSpeed;
+        velocityMag = newMag;
     }
 }
