@@ -25,6 +25,7 @@ public class Map
     public Map(float tileSize)
     {
         grid = new Tile[0][0];
+        bgImage = new Sprite("map.png", 800, 1);
         this.tileSize = tileSize;
     }
     
