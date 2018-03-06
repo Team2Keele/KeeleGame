@@ -24,7 +24,12 @@ public class Player extends Controllable
     @Override
     public void update()
     {
+        position.x += velocity.x;
+        position.y += velocity.y;
         
+        sprite.nextFrame();
+        
+        //TODO: update powerup
     }
     
     @Override

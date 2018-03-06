@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.team2.pacman.framework;
 
 import java.awt.Point;
@@ -17,4 +12,10 @@ public abstract class Controllable extends Entity
     
     public abstract void collide(Tile tile);
     public abstract void collide(Entity entity);
+    
+    public void isAtJunction() 
+    {
+        Tile currentTile = tileMap.getTile((int)position.x, (int)position.y);
+        tileMap.isTileJunction(currentTile);
+    }
 }
