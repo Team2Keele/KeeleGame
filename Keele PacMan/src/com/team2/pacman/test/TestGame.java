@@ -22,6 +22,7 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
     private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
     private Player testP1;
 
+    public TestGame() throws Controllable.InvalidStartTileException
     {       
         this.map1 = new Map("testmap.txt", "map.png", 100f);
         testP1 = new Player(map1, map1.getTile(4, 4), 0.9f);
@@ -173,6 +174,7 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
             int windowSizeY = (int)(game.map1.getGridSize().y * game.map1.getTileSize());
             TestWindow window = new TestWindow(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
         }
+        catch(Controllable.InvalidStartTileException ex)
         {
             System.out.print("ERROR: " + ex.getMessage() + "\n");
         }
