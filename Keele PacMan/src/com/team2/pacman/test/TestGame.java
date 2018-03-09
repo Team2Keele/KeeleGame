@@ -1,14 +1,15 @@
 package com.team2.pacman.test;
 
 import com.team2.pacman.framework.*;
-import com.team2.pacman.window.Window;
+import com.team2.pacman.framework.Controllable.Direction;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 
-public class TestGame extends Canvas implements Runnable {
+public class TestGame extends Canvas implements Runnable, KeyListener {
 
     public static final String VERSION = "0.1a";    //Keele PacMan game version
     public GameState state = GameState.START;
@@ -19,12 +20,56 @@ public class TestGame extends Canvas implements Runnable {
     /*Testing map and sprites rendering abilities*/
     private Map map1;
     private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
-    private Player testP1 = new Player(map1, new Point.Float(100, 100), new Point(10, 10));
+    private Player testP1;
 
-    public TestGame() {
-        this.map1 = new Map(16f);
-        testP1.setSpeed(1);
-        testP1.turnDown();
+    {       
+        this.map1 = new Map("testmap.txt", "map.png", 100f);
+        testP1 = new Player(map1, map1.getTile(4, 4), 0.9f);
+        testP1.setSprite(new Sprite("player.png", 16, 1));
+        testP1.setSpeed(4);
+    }
+    
+    @Override
+    public void keyReleased(KeyEvent e)
+    {
+        
+    }
+    
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+        Direction playerMove = Direction.NONE;
+        
+        switch(e.getKeyCode())
+        {
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_UP:
+                playerMove = Direction.UP;
+                break;
+            
+            case KeyEvent.VK_A:
+            case KeyEvent.VK_LEFT:
+                playerMove = Direction.LEFT;
+                break;
+                
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
+                playerMove = Direction.DOWN;
+                break;
+                
+            case KeyEvent.VK_D:
+            case KeyEvent.VK_RIGHT:
+                playerMove = Direction.RIGHT;
+                break;
+        }
+        
+        testP1.turn(playerMove);
+    }
+    
+    @Override
+    public void keyTyped(KeyEvent e)
+    {
+
     }
 
     public synchronized void start() {
@@ -103,7 +148,6 @@ public class TestGame extends Canvas implements Runnable {
 
         //draw map
         map1.render(g);
-        testSprite1.render(g, testSprite1.getCurrentFrame(), 200, 200);
         testP1.render(g);
 
         g.dispose();
@@ -122,7 +166,16 @@ public class TestGame extends Canvas implements Runnable {
     }
 
     public static void main(String args[]) {
-        TestWindow window = new TestWindow(800, 600, "Keele PacMan ver: " + VERSION, new TestGame());
+        try
+        {
+            TestGame game = new TestGame();
+            int windowSizeX = (int)(game.map1.getGridSize().x * game.map1.getTileSize());
+            int windowSizeY = (int)(game.map1.getGridSize().y * game.map1.getTileSize());
+            TestWindow window = new TestWindow(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
+        }
+        {
+            System.out.print("ERROR: " + ex.getMessage() + "\n");
+        }
     }
 
     public enum GameState {

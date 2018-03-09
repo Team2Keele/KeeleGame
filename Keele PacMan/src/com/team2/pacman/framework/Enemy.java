@@ -6,9 +6,9 @@ public class Enemy extends Controllable{
     
     private int deathTimer;
     
-    public Enemy(Map map, Point.Float pos, Point size)
+    public Enemy(Map map, Tile startTile,Point.Float pos, Point size)
     {
-        super(map, pos, size);
+        super(map, startTile, pos, size);
         deathTimer = 0;
     }
     

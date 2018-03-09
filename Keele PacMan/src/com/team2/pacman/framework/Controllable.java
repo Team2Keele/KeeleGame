@@ -5,17 +5,36 @@ import java.awt.Point;
 public abstract class Controllable extends Entity
 {
     
-    public Controllable(Map map, Point.Float pos, Point size)
+    protected Tile currentTile;
+    protected Tile nextTile;
+    
+    public static enum Direction
+    {
+        UP, DOWN, LEFT, RIGHT, NONE;
+    }
+    
+    public static class InvalidStartTileException extends Exception
+    {
+        public InvalidStartTileException(String message)
+        {
+            super(message);
+        }
+    }
+    
+    protected Direction currentDirection;
+    
+    public Controllable(Map map, Tile startTile, Point.Float pos, Point size)
     {
         super(map, pos, size);
+        currentTile = startTile;
+        currentDirection = Direction.NONE;
     }
     
     public abstract void collide(Tile tile);
     public abstract void collide(Entity entity);
     
-    public void isAtJunction() 
+    public boolean isAtJunction() 
     {
-        Tile currentTile = tileMap.getTile((int)position.x, (int)position.y);
-        tileMap.isTileJunction(currentTile);
+        return tileMap.isTileJunction(currentTile);
     }
 }
