@@ -4,13 +4,17 @@
  * and open the template in the editor.
  */
 package com.team2.pacman.framework;
+import com.team2.pacman.framework.Controllable.Direction;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Random;
 /**
  *
@@ -21,65 +25,98 @@ public class Map
     private Tile[][] grid;
     private Sprite bgImage;
     private float tileSize;
+    private Point gridLength;
     
-    public Map(float tileSize)
+    public Map(String mapFile, String imageFile, float tileSize)
     {
-        grid = new Tile[0][0];
-        bgImage = new Sprite("map.png", 800, 1);
+        bgImage = new Sprite(imageFile, 800, 1);
         this.tileSize = tileSize;
+        gridLength = new Point(0, 0);
+        loadMap(mapFile);
     }
     
     public void render(Graphics g)
     {
-        bgImage.render(g, bgImage.getCurrentFrame(), 0, 0);
+        bgImage.render(g, bgImage.getCurrentFrame(), 0, 0, (int)(grid.length * tileSize), (int)(grid[0].length * tileSize));
+        
+        for(int x = 0; x < grid.length; x++)
+        {
+            for(int y = 0; y < grid[0].length; y++)
+            {
+                Entity collectable = grid[x][y].getCollectable();
+                grid[x][y].testRender(g, this);
+                if(collectable != null)
+                {
+                    collectable.render(g);
+                }
+            }
+        }
     }
     
-    public void loadMap(String mapFile)
+    private void loadMap(String mapFile)
     {
         String line = null;
 
         try {
-            FileReader fileReader = new FileReader(mapFile);
+            URL url = this.getClass().getResource("../res/" + mapFile);
+            File file = new File(url.toURI());
+                    
+            FileReader fileReader = new FileReader(file);
 
             BufferedReader br = new BufferedReader(fileReader);
             
             String sizeLine = br.readLine();
-            int xSize = Integer.parseInt(sizeLine.split(" ")[0]);
-            int ySize = Integer.parseInt(sizeLine.split(" ")[1]);
-            grid = new Tile[xSize][ySize];
-            
-            TileType type = TileType.NONE;
-            
+            gridLength.setLocation(Integer.parseInt(sizeLine.split(" ")[0]), Integer.parseInt(sizeLine.split(" ")[1]));
+            grid = new Tile[gridLength.x][gridLength.y];
             Random rand = new Random();
             
-            int x = 0;
+            TileType type;
+            float xPos;
+            float yPos;
+            Point entitySize;
+            Point.Float entityPos;
+            float percentOffset = 0.5f;
+            Entity tileCollectable;
+            
+            int y = 0;
             while((line = br.readLine()) != null) 
             {
-                for(int y = 0; y < line.length(); y++)
+                for(int x = 0; x < line.length(); x++)
                 {
-                    if(x == xSize || x == 0 || y == ySize || y == 0)
+                    type = TileType.NONE;
+                    xPos = (x * tileSize) + (tileSize * ((1 - percentOffset) / 2)); 
+                    yPos = (y * tileSize) + (tileSize * ((1 - percentOffset) / 2));
+
+                    entityPos = new Point.Float(xPos, yPos);
+                    entitySize = new Point((int)(tileSize * percentOffset), (int)(tileSize * percentOffset));
+                    tileCollectable = null;
+                        
+                    if(x == gridLength.x - 1 || x == 0 || y == gridLength.y - 1 || y == 0)
                     {
                         type = TileType.EDGE;
                     }
                     
-                    if(line.charAt(y) == '0')
+                    if(line.charAt(x) == '1')
                     {
                         type = TileType.WALL;
                     }
                     
-                    //chance to place a powerup rather than an acorn
-                    if(rand.nextFloat() > 0.95)
+                    if(rand.nextFloat() > 0.95 && type != TileType.WALL) //chance to place a powerup rather than an acorn
                     {
                         //blocked by Powerup class
-                        //grid[x][y] = new Tile(this, new Point(x, y), type, new Powerup(PowerType.getRandomPower()));
+                        tileCollectable = new Powerup(this, entityPos, entitySize);
+                        tileCollectable.setSprite(new Sprite("powerup.png", 16, 1));
                     }
-                    else
+                    else if(type != TileType.WALL)
                     {
                         //blocked by Acorn class
-                        //grid[x][y] = new Tile(this, new Point(x, y), type, new Acorn());
+                        tileCollectable = new Acorn(this, entityPos, entitySize);
+                        tileCollectable.setSprite(new Sprite("acorn.png", 16, 1));
                     }
+                    
+                    grid[x][y] = new Tile(new Point(x, y), type, tileCollectable);
                 }
-                x++;
+                y++;
             }   
             
             br.close();         
@@ -96,34 +133,70 @@ public class Map
                 "Error reading file '" 
                 + mapFile + "'");                  
         }
+        catch(URISyntaxException ex)
+        {
+            
+        }
     }
     
-    public Tile getTileAdjacentUp(Tile tile) 
+    public Tile getTileAdjacent(Tile tile, Direction adjacentDir)
     {
-        return getTile(tile.getGridIndex().x, tile.getGridIndex().y - 1);
-    }
-    
-    public Tile getTileAdjacentDown(Tile tile) 
-    {
-        return getTile(tile.getGridIndex().x, tile.getGridIndex().y + 1);
-    }
-    
-    public Tile getTileAdjacentLeft(Tile tile) 
-    {
-        return getTile(tile.getGridIndex().x - 1, tile.getGridIndex().y);
-    }
-    
-    public Tile getTileAdjacentRight(Tile tile) 
-    {
-        return getTile(tile.getGridIndex().x + 1, tile.getGridIndex().y);
+        int xIncrement = 0;
+        int yIncrement = 0;
+
+        switch(adjacentDir)
+        {
+            case UP:
+                yIncrement = -1;
+                break;
+            case DOWN:
+                yIncrement = 1;
+                break;
+            case LEFT:
+                xIncrement = -1;
+                break;
+            case RIGHT:
+                xIncrement = 1;
+                break;
+        }
+        
+        try
+        {
+            return getTile(tile.getGridIndex().x + xIncrement, tile.getGridIndex().y + yIncrement);
+        }
+        catch(ArrayIndexOutOfBoundsException e)
+        {
+            //return dummy tile to prevent execptions
+            Point index = tile.getGridIndex();
+            Point nextIndex = (Point)tile.getGridIndex().clone();
+            if(index.x == 0)
+            {
+                nextIndex.x = gridLength.x - 1;
+            }
+            else if(index.x == gridLength.x - 1)
+            {
+                nextIndex.x = 0;
+            }
+            
+            if(index.y == 0)
+            {
+                nextIndex.y = gridLength.y - 1;
+            }
+            else if(index.y == gridLength.y - 1)
+            {
+                nextIndex.y = 0;
+            }
+            
+            return getTile(nextIndex.x, nextIndex.y);
+        }
     }
     
     public boolean isTileJunction(Tile tile) 
     {
-        boolean leftWall = getTileAdjacentLeft(tile).isWall();
-        boolean rightWall = getTileAdjacentRight(tile).isWall();
-        boolean upWall = getTileAdjacentUp(tile).isWall();
-        boolean downWall = getTileAdjacentDown(tile).isWall();
+        boolean leftWall = getTileAdjacent(tile, Direction.LEFT).isWall();
+        boolean rightWall = getTileAdjacent(tile, Direction.RIGHT).isWall();
+        boolean upWall = getTileAdjacent(tile, Direction.UP).isWall();
+        boolean downWall = getTileAdjacent(tile, Direction.DOWN).isWall();
         
         return !((leftWall && rightWall) || (upWall && downWall));
     }

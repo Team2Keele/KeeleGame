@@ -34,11 +34,6 @@ public class Sprite {
         }
     }
 
-    //just one big image sprite
-    public Sprite(String fileName) {
-        loadImage(fileName);
-    }
-
     //returns true if the spritesheet was found, false if not.
     private boolean loadImage(String fileName) {
         try {
@@ -70,7 +65,7 @@ public class Sprite {
         return image.getSubimage(frame * widthOfSprite, 0, widthOfSprite, image.getHeight());
     }
 
-    public void render(Graphics g, Image img, int x, int y) {
-        g.drawImage(img, x, y, null);
+    public void render(Graphics g, Image img, int x, int y, int xSize, int ySize) {
+        g.drawImage(img, x, y, xSize, ySize, null);
     }
 }

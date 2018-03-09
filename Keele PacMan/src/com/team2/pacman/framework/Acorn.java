@@ -13,8 +13,16 @@ import java.awt.Point;
  */
 public class Acorn extends Entity
 {
+    private int pointValue;
+    
     public Acorn(Map map, Point.Float pos, Point size)
     {
         super(map, pos, size); 
+        pointValue = 10;
+    }
+    
+    public int getValue()
+    {
+        return pointValue;
     }
 }

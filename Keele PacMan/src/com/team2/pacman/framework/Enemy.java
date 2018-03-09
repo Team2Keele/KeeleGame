@@ -7,9 +7,9 @@ public class Enemy extends Controllable{
     
     private int deathTimer;
     
-    public Enemy(Map map, Point.Float pos, Point size)
+    public Enemy(Map map, Tile startTile, float relativeSize) throws InvalidStartTileException
     {
-        super(map, pos, size);
+        super(map, startTile, relativeSize);
         deathTimer = 0;
     }
     
@@ -43,32 +43,12 @@ public class Enemy extends Controllable{
             int direction = rand.nextInt(4);
             switch (direction)
             {
-                case 0: turnUp();
-                case 1: turnDown();
-                case 2: turnLeft();
-                case 3: turnRight();
+                case 0: turn(Direction.UP);
+                case 1: turn(Direction.DOWN);
+                case 2: turn(Direction.LEFT);
+                case 3: turn(Direction.RIGHT);
             }
         }
-    }
-    
-    public void turnUp()
-    {
-        velocity.setLocation(new Point.Float(0, -velocityMag));
-    }
-    
-    public void turnDown()
-    {
-        velocity.setLocation(new Point.Float(0, velocityMag));
-    }
-    
-    public void turnLeft()
-    {
-        velocity.setLocation(new Point.Float(-velocityMag, 0));
-    }
-    
-    public void turnRight()
-    {
-        velocity.setLocation(new Point.Float(velocityMag, 0));
     }
     
     public void kill()

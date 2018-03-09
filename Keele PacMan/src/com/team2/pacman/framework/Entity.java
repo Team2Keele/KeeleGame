@@ -20,13 +20,13 @@ public abstract class Entity {
         this.size = size;
         sprite = new Sprite("default.png", 16, 1);
         tileMap = map;
-        velocity = new Point.Float(1, 1);
+        velocity = new Point.Float(0, 0);
         velocityMag = 0;
     }
     
     public void render(Graphics g)
     {
-        sprite.render(g, sprite.getCurrentFrame(), (int)position.x, (int)position.y);
+        sprite.render(g, sprite.getCurrentFrame(), (int)position.x, (int)position.y, size.x, size.y);
     }
     
     public void update()
@@ -47,8 +47,8 @@ public abstract class Entity {
     
     public boolean isColliding(Entity entity)
     {
-        Rectangle2D.Float bBox1 = new Rectangle2D.Float(entity.getPosition().x, 
-                entity.getPosition().y, entity.getSize().x, entity.getSize().y); 
+        Rectangle2D.Float bBox1 = new Rectangle2D.Float(getPosition().x, 
+                getPosition().y, getSize().x, getSize().y); 
         
         Rectangle2D.Float bBox2 = new Rectangle2D.Float(entity.getPosition().x, 
                 entity.getPosition().y, entity.getSize().x, entity.getSize().y);
@@ -56,13 +56,23 @@ public abstract class Entity {
         return rectsColliding(bBox1, bBox2);
     }
     
+    public boolean isContainedBy(Tile tile)
+    {
+        Rectangle2D.Float tileBBox = tileMap.getBoundingBox(tile);
+        Rectangle2D.Float entityBBox = new Rectangle2D.Float(getPosition().x, 
+                getPosition().y, getSize().x, getSize().y);
+        
+        boolean result = tileBBox.contains(entityBBox);
+        
+        return result;
+    }
+    
     protected boolean rectsColliding(Rectangle2D.Float rect1, Rectangle2D.Float rect2)
     {
-        boolean result = (rect1.x < rect2.x + rect2.width && 
-                    rect1.x + rect1.width > rect2.x &&
-                    rect1.y < rect2.y + rect2.height && 
-                    rect1.y + rect1.height > rect2.y) ;
-        
+        boolean result = (rect1.x < (rect2.x + rect2.width) && 
+                    (rect1.x + rect1.width) > rect2.x &&
+                    rect1.y < (rect2.y + rect2.height) && 
+                    (rect1.y + rect1.height) > rect2.y) ;
         return result;
     }
     

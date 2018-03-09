@@ -6,6 +6,7 @@
 package com.team2.pacman.framework;
 
 import java.awt.Point;
+import java.awt.geom.Rectangle2D;
 
 /**
  *
@@ -15,12 +16,18 @@ public class Player extends Controllable
 {
     
     private Powerup currentPower;
+    private int xOffset;
+    private int yOffset;
+
     
-    public Player(Map map, Point.Float pos, Point size)
+    public Player(Map map, Tile currentTile, float relativeSize) throws InvalidStartTileException
     {
-        super(map, pos, size);
+        super(map, currentTile, relativeSize);
+        
+        this.xOffset = (int)(map.getBoundingBox(currentTile).width * ((1 - relativeSize) / 2));
+        this.yOffset = (int)(map.getBoundingBox(currentTile).height * ((1 - relativeSize) / 2));
     }
-    
+        
     @Override
     public void update()
     {
@@ -28,6 +35,42 @@ public class Player extends Controllable
         position.y += velocity.y;
         
         sprite.nextFrame();
+
+        if(nextTile != null && isColliding(nextTile))
+        {
+            collide(nextTile);
+        }
+        
+        if(isAtJunction() && isContainedBy(currentTile) && nextMove != Direction.NONE)
+        {
+            turn(nextMove);
+        }
+        
+        //only case where this could happen is if player left edge
+        //therefore gets looped to other side
+        if(!isColliding(currentTile))
+        {
+            Rectangle2D.Float nextBBox = tileMap.getBoundingBox(nextTile);
+            
+            switch(currentDirection)
+            {
+                case UP:
+                    position.y = nextBBox.y + nextBBox.height - yOffset - 5;
+                    break;
+                case DOWN:
+                    position.y = nextBBox.y - nextBBox.height + yOffset + 5;
+                    break;
+                case LEFT:
+                    position.x = nextBBox.x + nextBBox.width - xOffset - 5;
+                    break;
+                case RIGHT:
+                    position.x = nextBBox.x - nextBBox.width + xOffset + 5;
+                    break;
+            }
+            
+            currentTile = nextTile;
+            nextTile = tileMap.getTileAdjacent(currentTile, currentDirection);
+        }
         
         //TODO: update powerup
     }
@@ -39,6 +82,11 @@ public class Player extends Controllable
         {
             stop();
         }
+        else
+        {
+            currentTile = nextTile;
+            nextTile = tileMap.getTileAdjacent(currentTile, currentDirection);
+        }
     }
     
     @Override
@@ -46,31 +94,6 @@ public class Player extends Controllable
     {
         
     }    
-    
-    public void turnUp()
-    {
-        velocity.setLocation(new Point.Float(0, -velocityMag));
-    }
-    
-    public void turnDown()
-    {
-        velocity.setLocation(new Point.Float(0, velocityMag));
-    }
-    
-    public void turnLeft()
-    {
-        velocity.setLocation(new Point.Float(-velocityMag, 0));
-    }
-    
-    public void turnRight()
-    {
-        velocity.setLocation(new Point.Float(velocityMag, 0));
-    }
-    
-    public void stop()
-    {
-        velocity.setLocation(new Point.Float(0, 0));
-    }
     
     public void buff(Powerup power)
     {
