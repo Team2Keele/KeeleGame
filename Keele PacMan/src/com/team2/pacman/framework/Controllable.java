@@ -13,9 +13,9 @@ public abstract class Controllable extends Entity
     public abstract void collide(Tile tile);
     public abstract void collide(Entity entity);
     
-    public void isAtJunction() 
+    public boolean isAtJunction() 
     {
         Tile currentTile = tileMap.getTile((int)position.x, (int)position.y);
-        tileMap.isTileJunction(currentTile);
+        return tileMap.isTileJunction(currentTile);
     }
 }
