@@ -1,6 +1,7 @@
 package com.team2.pacman.framework;
 
 import java.awt.Point;
+import java.util.Random;
 
 public class Enemy extends Controllable{
     
@@ -24,7 +25,8 @@ public class Enemy extends Controllable{
     @Override
     public void collide(Entity entity)
     {
-        if(entity instanceof Player && isColliding(entity)) {
+        if(entity instanceof Player && isColliding(entity)) 
+        {
             entity.deactivate();
         }
         else if(isColliding(entity))
@@ -35,7 +37,38 @@ public class Enemy extends Controllable{
     
     public void calculateJunction(Player player)
     {
-        // TODO
+        if(isAtJunction()) 
+        {
+            Random rand = new Random();
+            int direction = rand.nextInt(4);
+            switch (direction)
+            {
+                case 0: turnUp();
+                case 1: turnDown();
+                case 2: turnLeft();
+                case 3: turnRight();
+            }
+        }
+    }
+    
+    public void turnUp()
+    {
+        velocity.setLocation(new Point.Float(0, -velocityMag));
+    }
+    
+    public void turnDown()
+    {
+        velocity.setLocation(new Point.Float(0, velocityMag));
+    }
+    
+    public void turnLeft()
+    {
+        velocity.setLocation(new Point.Float(-velocityMag, 0));
+    }
+    
+    public void turnRight()
+    {
+        velocity.setLocation(new Point.Float(velocityMag, 0));
     }
     
     public void kill()
