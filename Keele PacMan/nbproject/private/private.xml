@@ -3,10 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file://ufs.stu.keele.ac.uk/homes/Desktop/KeeleGame-master/Keele%20PacMan/src/com/team2/pacman/framework/Player.java</file>
-            <file>file://ufs.stu.keele.ac.uk/homes/Desktop/KeeleGame-master/Keele%20PacMan/src/com/team2/pacman/framework/Entity.java</file>
-            <file>file://ufs.stu.keele.ac.uk/homes/Desktop/KeeleGame-master/Keele%20PacMan/src/com/team2/pacman/window/Game.java</file>
-            <file>file://ufs.stu.keele.ac.uk/homes/Desktop/KeeleGame-master/Keele%20PacMan/src/com/team2/pacman/framework/Sprite.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/res/acorn.png</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Entity.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Score.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/test/TestGame.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Sprite.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Map.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Player.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Controllable.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/window/Game.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Enemy.java</file>
+            <file>file:/C:/Users/elliott/Dropbox/Uni_Work/Year%202/Systems/Team%20Project/KeeleGame/Keele%20PacMan/src/com/team2/pacman/framework/Acorn.java</file>
         </group>
     </open-files>
 </project-private>

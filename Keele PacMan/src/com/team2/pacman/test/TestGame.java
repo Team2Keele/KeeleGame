@@ -4,10 +4,14 @@ import com.team2.pacman.framework.*;
 import com.team2.pacman.framework.Controllable.Direction;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Font;
+import java.awt.FontFormatException;
 import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
+import java.io.IOException;
+import java.io.InputStream;
 
 public class TestGame extends Canvas implements Runnable, KeyListener {
 
@@ -18,16 +22,37 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
     private Thread thread;              //Game thread
 
     /*Testing map and sprites rendering abilities*/
-    private Map map1;
+    private Map gameMap;
     private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
     private Player testP1;
+    private Score gameScore;
+    private Font scoreFont;
+    private Color scoreColor;
+    private long scoreTime;
 
     public TestGame() throws Controllable.InvalidStartTileException
     {       
-        this.map1 = new Map("testmap.txt", "map.png", 100f);
-        testP1 = new Player(map1, map1.getTile(4, 4), 0.9f);
+        this.gameMap = new Map("testmap.txt", "map.png", 100f);
+        testP1 = new Player(this, gameMap, gameMap.getTile(4, 4), 0.9f);
         testP1.setSprite(new Sprite("player.png", 16, 1));
         testP1.setSpeed(4);
+        gameScore = new Score();  
+        loadFont();
+        scoreColor = Color.WHITE;
+        scoreTime = System.currentTimeMillis();
+    }
+    
+    private void loadFont()
+    {
+        try
+        {
+            InputStream is = TestGame.class.getResourceAsStream("../res/" + "pixel_font.ttf");
+            scoreFont = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.BOLD, 25);
+        }
+        catch(FontFormatException | IOException e)
+        {
+            System.out.print("Error loading custom font");
+        }
     }
     
     @Override
@@ -124,6 +149,11 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
         switch (state) {
             case START: //handle the start of the game / menu stuff
                 testP1.update();
+                if(System.currentTimeMillis() > scoreTime + 300)
+                {
+                    gameScore.increment(1);
+                    scoreTime = System.currentTimeMillis();
+                }
                 break;
             case RUNNING: //normal game loop
                 break;
@@ -148,11 +178,31 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
         g.fillRect(0, 0, this.getWidth(), this.getHeight());
 
         //draw map
-        map1.render(g);
+        gameMap.render(g);
         testP1.render(g);
+        
+        //draw Score
+        g.setColor(scoreColor);
+        g.setFont(scoreFont);
+        g.drawString(gameScore.getScore() + "", 20, 40);
 
         g.dispose();
         bs.show();
+    }
+    
+    public Map getMapInstance()
+    {
+        return gameMap;
+    }
+    
+    public void incrementScore(int inc)
+    {
+        gameScore.increment(inc);
+    }
+    
+    public int getCurrentScore()
+    {
+        return gameScore.getScore();
     }
 
     public void reset() {
@@ -170,8 +220,8 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
         try
         {
             TestGame game = new TestGame();
-            int windowSizeX = (int)(game.map1.getGridSize().x * game.map1.getTileSize());
-            int windowSizeY = (int)(game.map1.getGridSize().y * game.map1.getTileSize());
+            int windowSizeX = (int)(game.gameMap.getGridSize().x * game.gameMap.getTileSize());
+            int windowSizeY = (int)(game.gameMap.getGridSize().y * game.gameMap.getTileSize());
             TestWindow window = new TestWindow(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
         }
         catch(Controllable.InvalidStartTileException ex)

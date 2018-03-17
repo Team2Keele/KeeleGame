@@ -5,7 +5,7 @@
  */
 package com.team2.pacman.framework;
 
-import java.awt.Point;
+import com.team2.pacman.test.TestGame;
 import java.awt.geom.Rectangle2D;
 
 /**
@@ -16,16 +16,18 @@ public class Player extends Controllable
 {
     
     private Powerup currentPower;
+    private TestGame gameInstance;
     private int xOffset;
     private int yOffset;
 
     
-    public Player(Map map, Tile currentTile, float relativeSize) throws InvalidStartTileException
+    public Player(TestGame gameInst, Map map, Tile currentTile, float relativeSize) throws InvalidStartTileException
     {
         super(map, currentTile, relativeSize);
         
-        this.xOffset = (int)(map.getBoundingBox(currentTile).width * ((1 - relativeSize) / 2));
-        this.yOffset = (int)(map.getBoundingBox(currentTile).height * ((1 - relativeSize) / 2));
+        gameInstance = gameInst;
+        this.xOffset = (int)(tileMap.getBoundingBox(currentTile).width * ((1 - relativeSize) / 2));
+        this.yOffset = (int)(tileMap.getBoundingBox(currentTile).height * ((1 - relativeSize) / 2));
     }
         
     @Override
@@ -44,6 +46,11 @@ public class Player extends Controllable
         if(isAtJunction() && isContainedBy(currentTile) && nextMove != Direction.NONE)
         {
             turn(nextMove);
+        }
+        
+        if(isColliding(currentTile.getCollectable()))
+        {
+            collide(currentTile.getCollectable());
         }
         
         //only case where this could happen is if player left edge
@@ -92,7 +99,14 @@ public class Player extends Controllable
     @Override
     public void collide(Entity entity)
     {
-        
+        if(entity.getClass() == Acorn.class)
+        {
+            collect((Acorn)entity);
+        }
+        else
+        {
+            buff((Powerup)entity);
+        }
     }    
     
     public void buff(Powerup power)
@@ -107,6 +121,7 @@ public class Player extends Controllable
     
     public void collect(Acorn points)
     {
-        
+        gameInstance.incrementScore(points.getValue());
+        points.deactivate();
     }
 }

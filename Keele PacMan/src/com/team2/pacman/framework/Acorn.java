@@ -5,6 +5,7 @@
  */
 package com.team2.pacman.framework;
 
+import com.team2.pacman.window.Game;
 import java.awt.Point;
 
 /**

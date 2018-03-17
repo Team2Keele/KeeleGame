@@ -1,11 +1,13 @@
 package com.team2.pacman.framework;
 
+import com.team2.pacman.window.Game;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 
 public abstract class Controllable extends Entity
 {
-    
+ 
+    protected Game gameObj;
     protected Tile currentTile;
     protected Tile nextTile;
     protected Direction currentDirection;

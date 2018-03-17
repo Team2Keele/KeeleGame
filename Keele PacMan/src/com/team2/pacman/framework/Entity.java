@@ -1,5 +1,6 @@
 package com.team2.pacman.framework;
 
+import com.team2.pacman.window.Game;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
@@ -18,6 +19,7 @@ public abstract class Entity {
     {
         this.position = position;
         this.size = size;
+        active = true;
         sprite = new Sprite("default.png", 16, 1);
         tileMap = map;
         velocity = new Point.Float(0, 0);
@@ -26,7 +28,10 @@ public abstract class Entity {
     
     public void render(Graphics g)
     {
-        sprite.render(g, sprite.getCurrentFrame(), (int)position.x, (int)position.y, size.x, size.y);
+        if(isActive())
+        {
+            sprite.render(g, sprite.getCurrentFrame(), (int)position.x, (int)position.y, size.x, size.y);
+        }
     }
     
     public void update()
@@ -47,13 +52,17 @@ public abstract class Entity {
     
     public boolean isColliding(Entity entity)
     {
-        Rectangle2D.Float bBox1 = new Rectangle2D.Float(getPosition().x, 
-                getPosition().y, getSize().x, getSize().y); 
-        
-        Rectangle2D.Float bBox2 = new Rectangle2D.Float(entity.getPosition().x, 
-                entity.getPosition().y, entity.getSize().x, entity.getSize().y);
-                
-        return rectsColliding(bBox1, bBox2);
+        if(isActive() && entity.isActive())
+        {
+            Rectangle2D.Float bBox1 = new Rectangle2D.Float(getPosition().x, 
+                    getPosition().y, getSize().x, getSize().y); 
+
+            Rectangle2D.Float bBox2 = new Rectangle2D.Float(entity.getPosition().x, 
+                    entity.getPosition().y, entity.getSize().x, entity.getSize().y);
+
+            return rectsColliding(bBox1, bBox2);
+        }
+        return false;
     }
     
     public boolean isContainedBy(Tile tile)
@@ -86,7 +95,7 @@ public abstract class Entity {
         active = false;
     }
 
-    public boolean getActive() 
+    public boolean isActive() 
     {
         return active;
     }

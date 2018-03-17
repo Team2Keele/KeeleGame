@@ -4,20 +4,68 @@ import com.team2.pacman.framework.*;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferStrategy;
 
-public class Game extends Canvas implements Runnable {
+public class Game extends Canvas implements Runnable, KeyListener {
 
     public static final String VERSION = "0.1a";    //Keele PacMan game version
     public GameState state = GameState.START;
 
     private boolean running = false;    //State of the game thread
     private Thread thread;              //Game thread
+    private Map gameMap;
+    private Score gameScore;
+    private Player gamePlayer;
 
     public Game() {
 
     }
 
+        @Override
+    public void keyReleased(KeyEvent e)
+    {
+        
+    }
+    
+    @Override
+    public void keyPressed(KeyEvent e)
+    {
+        Controllable.Direction playerMove = Controllable.Direction.NONE;
+        
+        switch(e.getKeyCode())
+        {
+            case KeyEvent.VK_W:
+            case KeyEvent.VK_UP:
+                playerMove = Controllable.Direction.UP;
+                break;
+            
+            case KeyEvent.VK_A:
+            case KeyEvent.VK_LEFT:
+                playerMove = Controllable.Direction.LEFT;
+                break;
+                
+            case KeyEvent.VK_S:
+            case KeyEvent.VK_DOWN:
+                playerMove = Controllable.Direction.DOWN;
+                break;
+                
+            case KeyEvent.VK_D:
+            case KeyEvent.VK_RIGHT:
+                playerMove = Controllable.Direction.RIGHT;
+                break;
+        }
+        
+        gamePlayer.turn(playerMove);
+    }
+    
+    @Override
+    public void keyTyped(KeyEvent e)
+    {
+
+    }
+    
     public synchronized void start() {
         //Stops making multiple threads of one that is already running
         if (running) {
@@ -93,6 +141,21 @@ public class Game extends Canvas implements Runnable {
 
         g.dispose();
         bs.show();
+    }
+    
+    public Map getMapInstance()
+    {
+        return gameMap;
+    }
+    
+    public void incrementScore(int inc)
+    {
+        gameScore.increment(inc);
+    }
+    
+    public int getCurrentScore()
+    {
+        return gameScore.getScore();
     }
 
     public void reset() {

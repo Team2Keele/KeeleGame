@@ -3,8 +3,8 @@ package com.team2.pacman.framework;
 
 public class Score {
     
-    protected int score;
-    protected float multi;
+    private int score;
+    private float multi;
     
     public Score()
     {
@@ -12,24 +12,23 @@ public class Score {
         multi = 1;
     }
     
-    private void increment(int points) {
+    public void increment(int points) {
         score = score + (int)(points * multi);
     }
     
-    private void decrement(int points) {
+    public void decrement(int points) {
         score = score - points;
-    
     }
     
-    private int getScore() {
+    public int getScore() {
         return score;
     }
     
-   private void setMulti(float setMulti) { //passed the score multiplier, 
+   public void setMulti(float setMulti) { //passed the score multiplier, 
        multi = setMulti;    
    }
    
-   private void reset() {
+   public void reset() {
        score = 0;    
    }
 }
