@@ -19,14 +19,12 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
 
     /*Testing map and sprites rendering abilities*/
     private Map map1;
-    private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
     private Player testP1;
 
     public TestGame() throws Controllable.InvalidStartTileException
     {       
         this.map1 = new Map("testmap.txt", "map.png", 100f);
         testP1 = new Player(map1, map1.getTile(4, 4), 0.9f);
-        testP1.setSprite(new Sprite("player.png", 16, 1));
         testP1.setSpeed(4);
     }
     

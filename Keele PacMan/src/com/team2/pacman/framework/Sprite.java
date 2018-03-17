@@ -17,12 +17,15 @@ public class Sprite {
     private int numOfFrames = 0;
     private int currentFrame = 0;
     private int widthOfSprite = 0;
+    private int frameRate = 1;
+    private int renderCalls = 0;
     private BufferedImage image = null;
     private BufferedImage[] sprites = null;
 
-    public Sprite(String fileName, int widthOfSprite, int numOfFrames) {
+    public Sprite(String fileName, int widthOfSprite, int numOfFrames, int fps) {
         this.widthOfSprite = widthOfSprite;
         this.numOfFrames = numOfFrames;
+        this.frameRate = fps;
 
         //Load spriteSheet
         if (loadImage(fileName)) {
@@ -53,7 +56,13 @@ public class Sprite {
 
     //increments the currentFrame index and loops back to 0 if
     public void nextFrame() {
-        currentFrame = (currentFrame + 1) % numOfFrames;
+        if ((frameRate != 0) & renderCalls >= frameRate) {
+            currentFrame = (currentFrame + 1) % numOfFrames;
+            renderCalls = 0;
+        } else {
+            renderCalls++;
+        }
+
     }
 
     //returns the current frames bufferedImage.
@@ -65,7 +74,15 @@ public class Sprite {
         return image.getSubimage(frame * widthOfSprite, 0, widthOfSprite, image.getHeight());
     }
 
-    public void render(Graphics g, Image img, int x, int y, int xSize, int ySize) {
-        g.drawImage(img, x, y, xSize, ySize, null);
+    public void render(Graphics g, Image img, int x, int y, int xSize, int ySize, boolean flipH, boolean flipV) {
+        if (flipH && flipV) {
+            g.drawImage(img, x + xSize, y + ySize, -xSize, -ySize, null);
+        } else if (flipH && !flipV) {
+            g.drawImage(img, x + xSize, y, -xSize, ySize, null);
+        } else if (!flipH && flipV) {
+            g.drawImage(img, x, y + ySize, xSize, -ySize, null);
+        } else {
+            g.drawImage(img, x, y, xSize, ySize, null);
+        }
     }
 }
