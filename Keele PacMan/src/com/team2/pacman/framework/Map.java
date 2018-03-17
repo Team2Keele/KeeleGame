@@ -50,6 +50,17 @@ public class Map {
         }
     }
 
+    public void update() {
+        for (Tile[] tiles : grid) {
+            for (Tile tile : tiles) {
+                if (tile.getCollectable() != null) {
+                    tile.getCollectable().update();
+                }
+                
+            }
+        }
+    }
+
     private void loadMap(String mapFile) {
         String line = null;
 
@@ -71,7 +82,7 @@ public class Map {
             float yPos;
             Point entitySize;
             Point.Float entityPos;
-            float percentOffset = 0.5f;
+            float percentOffset = 0.32f;
             Entity tileCollectable;
 
             int y = 0;
@@ -97,11 +108,9 @@ public class Map {
                     {
                         //blocked by Powerup class
                         tileCollectable = new Powerup(this, entityPos, entitySize);
-                        tileCollectable.setSprite(new Sprite("powerup.png", 16, 1, 0));
                     } else if (type != TileType.WALL) {
                         //blocked by Acorn class
                         tileCollectable = new Acorn(this, entityPos, entitySize);
-                        tileCollectable.setSprite(new Sprite("acorn.png", 16, 1, 0));
                     }
 
                     grid[x][y] = new Tile(new Point(x, y), type, tileCollectable);

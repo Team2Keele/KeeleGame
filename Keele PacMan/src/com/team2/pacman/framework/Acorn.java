@@ -17,7 +17,8 @@ public class Acorn extends Entity
     
     public Acorn(Map map, Point.Float pos, Point size)
     {
-        super(map, pos, size); 
+        super(map, pos, size);
+        super.setSprite(new Sprite("acorn-sheet.png", 16, 4, 4));
         pointValue = 10;
     }
     

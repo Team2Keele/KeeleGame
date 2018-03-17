@@ -21,53 +21,48 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
     private Map map1;
     private Player testP1;
 
-    public TestGame() throws Controllable.InvalidStartTileException
-    {       
+    public TestGame() throws Controllable.InvalidStartTileException {
         this.map1 = new Map("testmap.txt", "map.png", 100f);
         testP1 = new Player(map1, map1.getTile(4, 4), 0.9f);
         testP1.setSpeed(4);
     }
-    
+
     @Override
-    public void keyReleased(KeyEvent e)
-    {
-        
+    public void keyReleased(KeyEvent e) {
+
     }
-    
+
     @Override
-    public void keyPressed(KeyEvent e)
-    {
+    public void keyPressed(KeyEvent e) {
         Direction playerMove = Direction.NONE;
-        
-        switch(e.getKeyCode())
-        {
+
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_W:
             case KeyEvent.VK_UP:
                 playerMove = Direction.UP;
                 break;
-            
+
             case KeyEvent.VK_A:
             case KeyEvent.VK_LEFT:
                 playerMove = Direction.LEFT;
                 break;
-                
+
             case KeyEvent.VK_S:
             case KeyEvent.VK_DOWN:
                 playerMove = Direction.DOWN;
                 break;
-                
+
             case KeyEvent.VK_D:
             case KeyEvent.VK_RIGHT:
                 playerMove = Direction.RIGHT;
                 break;
         }
-        
+
         testP1.turn(playerMove);
     }
-    
+
     @Override
-    public void keyTyped(KeyEvent e)
-    {
+    public void keyTyped(KeyEvent e) {
 
     }
 
@@ -121,9 +116,12 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
         //TODO handle the changes of game states and the updates of every tick of each entity and collision
         switch (state) {
             case START: //handle the start of the game / menu stuff
-                testP1.update();
+
+                this.changeState(GameState.RUNNING);
                 break;
             case RUNNING: //normal game loop
+                map1.update();
+                testP1.update();
                 break;
             case END: //handle the finishing of the game / win or lose.
                 break;
@@ -165,15 +163,12 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
     }
 
     public static void main(String args[]) {
-        try
-        {
+        try {
             TestGame game = new TestGame();
-            int windowSizeX = (int)(game.map1.getGridSize().x * game.map1.getTileSize());
-            int windowSizeY = (int)(game.map1.getGridSize().y * game.map1.getTileSize());
+            int windowSizeX = (int) (game.map1.getGridSize().x * game.map1.getTileSize());
+            int windowSizeY = (int) (game.map1.getGridSize().y * game.map1.getTileSize());
             TestWindow window = new TestWindow(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
-        }
-        catch(Controllable.InvalidStartTileException ex)
-        {
+        } catch (Controllable.InvalidStartTileException ex) {
             System.out.print("ERROR: " + ex.getMessage() + "\n");
         }
     }
