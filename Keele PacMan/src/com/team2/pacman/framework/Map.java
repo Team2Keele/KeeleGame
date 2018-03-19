@@ -24,20 +24,24 @@ public class Map
 {
     private Tile[][] grid;
     private Sprite bgImage;
-    private float tileSize;
+    private Point tileSize;
     private Point gridLength;
+    private int windowX;
+    private int windowY;
     
-    public Map(String mapFile, String imageFile, float tileSize)
+    public Map(String mapFile, String imageFile, int windowX, int windowY)
     {
         bgImage = new Sprite(imageFile, 800, 1);
-        this.tileSize = tileSize;
         gridLength = new Point(0, 0);
+        this.windowX = windowX;
+        this.windowY = windowY;
+        tileSize = new Point(0, 0);
         loadMap(mapFile);
     }
     
     public void render(Graphics g)
     {
-        bgImage.render(g, bgImage.getCurrentFrame(), 0, 0, (int)(grid.length * tileSize), (int)(grid[0].length * tileSize));
+        bgImage.render(g, 0, 0, windowX, windowY);
         
         for(int x = 0; x < grid.length; x++)
         {
@@ -67,6 +71,8 @@ public class Map
             
             String sizeLine = br.readLine();
             gridLength.setLocation(Integer.parseInt(sizeLine.split(" ")[0]), Integer.parseInt(sizeLine.split(" ")[1]));
+            tileSize.x = windowX / gridLength.x;
+            tileSize.y = windowY / gridLength.y;
             grid = new Tile[gridLength.x][gridLength.y];
             Random rand = new Random();
             
@@ -84,11 +90,11 @@ public class Map
                 for(int x = 0; x < line.length(); x++)
                 {
                     type = TileType.NONE;
-                    xPos = (x * tileSize) + (tileSize * ((1 - percentOffset) / 2)); 
-                    yPos = (y * tileSize) + (tileSize * ((1 - percentOffset) / 2));
+                    xPos = (x * tileSize.x) + (tileSize.x * ((1 - percentOffset) / 2)); 
+                    yPos = (y * tileSize.y) + (tileSize.y * ((1 - percentOffset) / 2));
 
                     entityPos = new Point.Float(xPos, yPos);
-                    entitySize = new Point((int)(tileSize * percentOffset), (int)(tileSize * percentOffset));
+                    entitySize = new Point((int)(tileSize.x * percentOffset), (int)(tileSize.y * percentOffset));
                     tileCollectable = null;
                         
                     if(x == gridLength.x - 1 || x == 0 || y == gridLength.y - 1 || y == 0)
@@ -203,9 +209,9 @@ public class Map
     
     public Rectangle2D.Float getBoundingBox(Tile tile)
     {
-        float[] coord = {tile.getGridIndex().x * tileSize, tile.getGridIndex().y * tileSize};
+        float[] coord = {tile.getGridIndex().x * tileSize.x, tile.getGridIndex().y * tileSize.y};
         
-        return new Rectangle2D.Float(coord[0], coord[1], tileSize, tileSize);
+        return new Rectangle2D.Float(coord[0], coord[1], tileSize.x, tileSize.y);
     }
     
     public void setBackground(Sprite image)
@@ -223,12 +229,12 @@ public class Map
         return new Point(grid.length, grid[0].length);
     }
     
-    public float getTileSize()
+    public Point getTileSize()
     {
         return tileSize;
     }
     
-    public void setTileSize(float newTileSize)
+    public void setTileSize(Point newTileSize)
     {
         tileSize = newTileSize;
     }

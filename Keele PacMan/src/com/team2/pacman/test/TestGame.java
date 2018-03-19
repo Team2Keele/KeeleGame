@@ -1,7 +1,8 @@
 package com.team2.pacman.test;
 
 import com.team2.pacman.framework.*;
-import com.team2.pacman.framework.Controllable.Direction;
+import com.team2.pacman.test.TestGame;
+import com.team2.pacman.test.TestWindow;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
@@ -20,41 +21,68 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
 
     private boolean running = false;    //State of the game thread
     private Thread thread;              //Game thread
-
-    /*Testing map and sprites rendering abilities*/
     private Map gameMap;
-    private Sprite testSprite1 = new Sprite("spriteTest.png", 16, 2);
-    private Player testP1;
     private Score gameScore;
+    private TestMenu gameMenu;
     private Font scoreFont;
     private Color scoreColor;
     private long scoreTime;
+    private TestPlayer gamePlayer;
+    private TestEnemy[] enemies;
+    private float playerSpeed;
+    private float enemySpeed;
 
-    public TestGame() throws Controllable.InvalidStartTileException
-    {       
-        this.gameMap = new Map("testmap.txt", "map.png", 100f);
-        testP1 = new Player(this, gameMap, gameMap.getTile(4, 4), 0.9f);
-        testP1.setSprite(new Sprite("player.png", 16, 1));
-        testP1.setSpeed(4);
-        gameScore = new Score();  
-        loadFont();
-        scoreColor = Color.WHITE;
-        scoreTime = System.currentTimeMillis();
+    public TestGame(int windowX, int windowY) {
+        initialize(windowX, windowY);
     }
     
-    private void loadFont()
+    private void initialize(int windowX, int windowY)
+    {
+        try
+        {
+            this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
+            playerSpeed = (gameMap.getTileSize().x * gameMap.getTileSize().y) / 500;
+            enemySpeed = playerSpeed * 0.9f;
+            gamePlayer = new TestPlayer(this, gameMap.getTile(12, 8), 0.9f);
+            gamePlayer.setSprite(new Sprite("player.png", 16, 1));
+            gamePlayer.setSpeed(playerSpeed);
+            gameScore = new Score();  
+            scoreFont = loadFont(25);
+            scoreColor = Color.WHITE;
+            scoreTime = System.currentTimeMillis();
+            gameMenu = new TestMenu();
+            enemies = new TestEnemy[]{new TestEnemy(gameMap, gamePlayer, gameMap.getTile(4, 15), 0.9f),
+                                new TestEnemy(gameMap, gamePlayer, gameMap.getTile(20, 15), 0.9f), 
+                                new TestEnemy(gameMap, gamePlayer, gameMap.getTile(4, 20), 0.9f), 
+                                new TestEnemy(gameMap, gamePlayer, gameMap.getTile(20, 20), 0.9f)};
+            
+            for(int i = 0; i < enemies.length; i++)
+            {
+                enemies[i].setSpeed(enemySpeed);
+                enemies[i].setVulnerable();
+            }
+        }
+        catch(Controllable.InvalidStartTileException e)
+        {
+            System.out.print("ERROR: " + e.getMessage() + "\n");
+            System.exit(-1);
+        }
+    }
+    
+    public static Font loadFont(int fontSize)
     {
         try
         {
             InputStream is = TestGame.class.getResourceAsStream("../res/" + "pixel_font.ttf");
-            scoreFont = Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.BOLD, 25);
+            return Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.BOLD, fontSize);
         }
         catch(FontFormatException | IOException e)
         {
             System.out.print("Error loading custom font");
+            return new Font("Times New Roman", Font.BOLD, fontSize);
         }
     }
-    
+
     @Override
     public void keyReleased(KeyEvent e)
     {
@@ -62,34 +90,57 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
     }
     
     @Override
-    public void keyPressed(KeyEvent e)
+    public void keyPressed(KeyEvent e) 
     {
-        Direction playerMove = Direction.NONE;
+        Controllable.Direction playerMove = Controllable.Direction.NONE;
         
         switch(e.getKeyCode())
         {
+            case KeyEvent.VK_SPACE:
+                switch(state)
+                {
+                    case START:
+                        state = GameState.RUNNING;
+                        break;
+                    case RUNNING:
+                        state = GameState.PAUSED;
+                        break;
+                    case PAUSED:
+                        state = GameState.RUNNING;
+                        break;
+                    case END:
+                        reset();
+                        break;
+                }
+                break;
+            case KeyEvent.VK_ESCAPE:
+                if(state == GameState.PAUSED || state == GameState.START || state == GameState.END)
+                {
+                    System.exit(0);
+                }
+                break;
             case KeyEvent.VK_W:
             case KeyEvent.VK_UP:
-                playerMove = Direction.UP;
+                playerMove = Controllable.Direction.UP;
                 break;
             
             case KeyEvent.VK_A:
             case KeyEvent.VK_LEFT:
-                playerMove = Direction.LEFT;
+                playerMove = Controllable.Direction.LEFT;
                 break;
                 
             case KeyEvent.VK_S:
             case KeyEvent.VK_DOWN:
-                playerMove = Direction.DOWN;
+                playerMove = Controllable.Direction.DOWN;
                 break;
                 
             case KeyEvent.VK_D:
             case KeyEvent.VK_RIGHT:
-                playerMove = Direction.RIGHT;
+                playerMove = Controllable.Direction.RIGHT;
                 break;
         }
         
-        testP1.turn(playerMove);
+        gamePlayer.turn(playerMove);
     }
     
     @Override
@@ -97,7 +148,12 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
     {
 
     }
-
+    
+    public void endGame()
+    {
+        state = GameState.END;
+    }
+    
     public synchronized void start() {
         //Stops making multiple threads of one that is already running
         if (running) {
@@ -148,16 +204,28 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
         //TODO handle the changes of game states and the updates of every tick of each entity and collision
         switch (state) {
             case START: //handle the start of the game / menu stuff
-                testP1.update();
+                gameMenu.update(state);
+                break;
+            case RUNNING: //normal game loop
+                gameMenu.update(state);
+                gamePlayer.update();
+                
+                for(int i = 0; i < enemies.length; i++)
+                {
+                    enemies[i].update();
+                }
+                
                 if(System.currentTimeMillis() > scoreTime + 300)
                 {
                     gameScore.increment(1);
                     scoreTime = System.currentTimeMillis();
                 }
                 break;
-            case RUNNING: //normal game loop
+            case PAUSED:
+                gameMenu.update(state);
                 break;
             case END: //handle the finishing of the game / win or lose.
+                gameMenu.update(state);
                 break;
             default:
                 break;
@@ -179,20 +247,39 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
 
         //draw map
         gameMap.render(g);
-        testP1.render(g);
+        
+        //draw player and enemies
+        gamePlayer.render(g);
+        for(int i = 0; i < enemies.length; i++)
+        {
+            enemies[i].render(g);
+        }
         
         //draw Score
         g.setColor(scoreColor);
         g.setFont(scoreFont);
         g.drawString(gameScore.getScore() + "", 20, 40);
-
+        
+        //render Menu
+        gameMenu.render(g, this);
+        
         g.dispose();
         bs.show();
+    }
+    
+    public TestEnemy[] getEnemies()
+    {
+        return enemies;
     }
     
     public Map getMapInstance()
     {
         return gameMap;
+    }
+    
+    public int getHighScore()
+    {
+        return 0;
     }
     
     public void incrementScore(int inc)
@@ -204,33 +291,54 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
     {
         return gameScore.getScore();
     }
+    
+    public void setScoreMult(float multiplier)
+    {
+        gameScore.setMulti(multiplier);
+    }
+    
+    public void setEnemiesVulnerable()
+    {
+        for(int i = 0; i < enemies.length; i++)
+        {
+            enemies[i].setVulnerable();
+        }
+    }
+    
+    public void setEnemiesInvulnerable()
+    {
+        for(int i = 0; i < enemies.length; i++)
+        {
+            enemies[i].setInvulnerable();
+        }
+    }
+    
+    public void setEnemySpeedMult(float mult)
+    {
+        for(int i = 0; i < enemies.length; i++)
+        {
+            enemies[i].setSpeedMult(mult);
+        }
+    }
 
     public void reset() {
-        //TODO handle all value resets here: player lives, score, enemy, map, timer, powerups... everything.
+        initialize(getWidth(), getHeight());
 
         //set the game state to start again
-        changeState(GameState.START);
+        state = GameState.START;
     }
-
-    public void changeState(GameState newState) {
-        state = newState;
-    }
-
+    
     public static void main(String args[]) {
-        try
-        {
-            TestGame game = new TestGame();
-            int windowSizeX = (int)(game.gameMap.getGridSize().x * game.gameMap.getTileSize());
-            int windowSizeY = (int)(game.gameMap.getGridSize().y * game.gameMap.getTileSize());
-            TestWindow window = new TestWindow(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
-        }
-        catch(Controllable.InvalidStartTileException ex)
-        {
-            System.out.print("ERROR: " + ex.getMessage() + "\n");
-        }
+
+        int windowSizeX = 1000;
+        int windowSizeY = 1000;
+        TestGame game = new TestGame(windowSizeX, windowSizeY);
+        
+        TestWindow window = new TestWindow(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
+
     }
 
     public enum GameState {
-        START, RUNNING, END
+        START, RUNNING, PAUSED, END;
     }
 }

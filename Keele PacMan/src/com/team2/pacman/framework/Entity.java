@@ -1,6 +1,5 @@
 package com.team2.pacman.framework;
 
-import com.team2.pacman.window.Game;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
@@ -30,7 +29,7 @@ public abstract class Entity {
     {
         if(isActive())
         {
-            sprite.render(g, sprite.getCurrentFrame(), (int)position.x, (int)position.y, size.x, size.y);
+            sprite.render(g, (int)position.x, (int)position.y, size.x, size.y);
         }
     }
     
@@ -52,7 +51,7 @@ public abstract class Entity {
     
     public boolean isColliding(Entity entity)
     {
-        if(isActive() && entity.isActive())
+        if(isActive() && entity != null && entity.isActive())
         {
             Rectangle2D.Float bBox1 = new Rectangle2D.Float(getPosition().x, 
                     getPosition().y, getSize().x, getSize().y); 

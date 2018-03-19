@@ -1,8 +1,9 @@
 package com.team2.pacman.framework;
-
+import static com.team2.pacman.framework.Powerup.PowerType.values;
 import com.team2.pacman.window.Game;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
+import java.util.Random;
 
 public abstract class Controllable extends Entity
 {
@@ -12,12 +13,57 @@ public abstract class Controllable extends Entity
     protected Tile nextTile;
     protected Direction currentDirection;
     protected Direction nextMove;
+    protected float speedMult;
     protected int xOffset;
     protected int yOffset;
     
     public static enum Direction
     {
-        UP, DOWN, LEFT, RIGHT, NONE;
+        NONE, UP, DOWN, LEFT, RIGHT;
+        
+        public static Direction getRandomDir()
+        {
+            Random random = new Random();
+            return values()[random.nextInt(values().length - 1) + 1];
+        }
+        
+        public static float getDirAsAngle(Direction dir)
+        {
+            switch(dir)
+            {
+                case UP:
+                    return 270f;
+                case DOWN:
+                    return 90f;
+                case LEFT:
+                    return 180f;
+                case RIGHT:
+                    return 0f;
+                case NONE:
+                    return 1000000f;
+                default: 
+                    return -1f;
+            }
+        }
+        
+        public static Direction getClosestDir(float angle)
+        {
+            float lastDiff = 1000;
+            float diff;
+            Direction dir = NONE;
+            for(int i = 0; i < values().length; i++)
+            {
+                float dirAngle = getDirAsAngle(values()[i]);
+                diff = Math.abs(Math.min(Math.abs(angle - dirAngle), 360 - Math.abs(angle - dirAngle)));
+                if(diff < lastDiff)
+                {
+                    dir = values()[i];
+                    lastDiff = diff;
+                }
+            }
+            
+            return dir;
+        }
     }
     
     public static class InvalidStartTileException extends Exception
@@ -34,9 +80,51 @@ public abstract class Controllable extends Entity
         currentTile = startTile;
         currentDirection = Direction.NONE;
         nextMove = Direction.NONE;
+        speedMult = 1;
+        this.xOffset = (int)(tileMap.getBoundingBox(currentTile).width * ((1 - relativeSize) / 2));
+        this.yOffset = (int)(tileMap.getBoundingBox(currentTile).height * ((1 - relativeSize) / 2));
         if(currentTile.isWall())
         {
-            throw(new Controllable.InvalidStartTileException("Start Tile cannot be a wall"));
+            throw(new InvalidStartTileException("Start Tile cannot be a wall"));
+        }
+    }
+    
+    protected void updatePosition()
+    {
+        position.x += velocity.x * speedMult;
+        position.y += velocity.y * speedMult;
+        
+        sprite.nextFrame();
+
+        if(nextTile != null && isColliding(nextTile))
+        {
+            collide(nextTile);
+        }
+        
+        //only case where this could happen is if entity left edge
+        //therefore gets looped to other side
+        if(!isColliding(currentTile))
+        {
+            Rectangle2D.Float nextBBox = tileMap.getBoundingBox(nextTile);
+            
+            switch(currentDirection)
+            {
+                case UP:
+                    position.y = nextBBox.y + nextBBox.height - yOffset - 5;
+                    break;
+                case DOWN:
+                    position.y = nextBBox.y - nextBBox.height + yOffset + 5;
+                    break;
+                case LEFT:
+                    position.x = nextBBox.x + nextBBox.width - xOffset - 5;
+                    break;
+                case RIGHT:
+                    position.x = nextBBox.x - nextBBox.width + xOffset + 5;
+                    break;
+            }
+            
+            currentTile = nextTile;
+            nextTile = tileMap.getTileAdjacent(currentTile, currentDirection);
         }
     }
     
@@ -98,7 +186,7 @@ public abstract class Controllable extends Entity
         }
     }
     
-    private void calculateTurn(Direction moveDir, Direction checkDir, float velocityX, float velocityY)
+    protected void calculateTurn(Direction moveDir, Direction checkDir, float velocityX, float velocityY)
     {
         if((isContainedBy(currentTile) && isAtJunction()) ||
             currentDirection == checkDir  || currentDirection == Direction.NONE)
@@ -120,5 +208,29 @@ public abstract class Controllable extends Entity
         nextTile = null;
         currentDirection = Direction.NONE;
         center();
+    }
+    
+    public void setSpeedMult(float mult)
+    {
+        speedMult = mult;
+    }
+    
+    public void moveToTile(Tile tile) throws InvalidStartTileException
+    {
+        if(!tile.isWall())
+        {
+            stop();
+            currentTile = tile;
+            Rectangle2D.Float tileRect = tileMap.getBoundingBox(tile);
+        
+            float xPos = tileRect.x + xOffset;
+            float yPos = tileRect.y + yOffset;
+            
+            position.setLocation(xPos, yPos);
+        }
+        else
+        {
+            throw(new InvalidStartTileException("New Tile cannot be a wall"));
+        }
     }
 }

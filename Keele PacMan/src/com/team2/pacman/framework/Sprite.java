@@ -65,7 +65,7 @@ public class Sprite {
         return image.getSubimage(frame * widthOfSprite, 0, widthOfSprite, image.getHeight());
     }
 
-    public void render(Graphics g, Image img, int x, int y, int xSize, int ySize) {
-        g.drawImage(img, x, y, xSize, ySize, null);
+    public void render(Graphics g, int x, int y, int xSize, int ySize) {
+        g.drawImage(getCurrentFrame(), x, y, xSize, ySize, null);
     }
 }

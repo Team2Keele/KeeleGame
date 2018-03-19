@@ -11,6 +11,7 @@ public class Window {
         game.setMinimumSize(new Dimension(w, h));
         
         JFrame frame = new JFrame(title);
+        frame.addKeyListener(game);
         frame.add(game);
         frame.pack();
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

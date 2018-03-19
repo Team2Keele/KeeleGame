@@ -3,9 +3,10 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.team2.pacman.framework;
+package com.team2.pacman.test;
 
-import com.team2.pacman.test.TestGame;
+import com.team2.pacman.framework.*;
+import com.team2.pacman.test.*;
 import com.team2.pacman.window.Game;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
@@ -14,14 +15,14 @@ import java.awt.geom.Rectangle2D;
  *
  * @author elliott
  */
-public class Player extends Controllable
+public class TestPlayer extends Controllable
 {
     
     private Powerup currentPower;
-    private Game gameInstance;
+    private TestGame gameInstance;
 
     
-    public Player(Game gameInst, Tile startTile, float relativeSize) throws InvalidStartTileException
+    public TestPlayer(TestGame gameInst, Tile startTile, float relativeSize) throws Controllable.InvalidStartTileException
     {
         super(gameInst.getMapInstance(), startTile, relativeSize);
         
@@ -33,11 +34,11 @@ public class Player extends Controllable
     @Override
     public void update()
     {   
-        Enemy[] enemies = gameInstance.getEnemies();
+        TestEnemy[] enemies = gameInstance.getEnemies();
         
         updatePosition();
         
-        if(isAtJunction() && isContainedBy(currentTile) && nextMove != Direction.NONE)
+        if(isAtJunction() && isContainedBy(currentTile) && nextMove != Controllable.Direction.NONE)
         {
             turn(nextMove);
         }

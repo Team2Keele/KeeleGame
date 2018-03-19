@@ -27,6 +27,11 @@ public class Tile {
         return collectable;
     }
     
+    public void removeCollectable()
+    {
+        collectable = null;
+    }
+    
     public boolean isWall() 
     {
         return type == TileType.WALL;

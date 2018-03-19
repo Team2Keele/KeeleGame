@@ -18,6 +18,6 @@ public enum PowerType
     public static PowerType getRandomPower()
     {
         Random random = new Random();
-        return values()[random.nextInt(values().length)];
+        return values()[random.nextInt(values().length - 1) + 1];
     }
 }

@@ -24,8 +24,8 @@ public class Score {
         return score;
     }
     
-   public void setMulti(float setMulti) { //passed the score multiplier, 
-       multi = setMulti;    
+   public void setMulti(float multiplier) { //passed the score multiplier, 
+       multi = multiplier;    
    }
    
    public void reset() {
