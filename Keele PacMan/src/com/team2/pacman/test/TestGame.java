@@ -59,7 +59,6 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
             for(int i = 0; i < enemies.length; i++)
             {
                 enemies[i].setSpeed(enemySpeed);
-                enemies[i].setVulnerable();
             }
         }
         catch(Controllable.InvalidStartTileException e)
