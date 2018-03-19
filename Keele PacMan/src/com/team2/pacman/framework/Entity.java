@@ -13,24 +13,40 @@ public abstract class Entity {
     protected float velocityMag;
     protected boolean active;
     protected Sprite sprite;
+    protected Sprite deathSprite;
+    protected long deathTime;
+    protected int deathLengthMillis;
+    protected boolean finishedDeathAnimation;
 
     public Entity(Map map, Point.Float position, Point size) {
         this.position = position;
         this.size = size;
+        active = true;
         sprite = new Sprite("default.png", 16, 1, 0);
+        deathSprite = new Sprite("default.png", 16, 1, 0);
         tileMap = map;
         velocity = new Point.Float(0, 0);
         velocityMag = 0;
+        finishedDeathAnimation = false;
+        deathTime = -1;
     }
 
     public void render(Graphics g) {
-        sprite.render(g, sprite.getCurrentFrame(), (int) position.x, (int) position.y, size.x, size.y, false, false);
+        sprite.render(g, (int) position.x, (int) position.y, size.x, size.y);
     }
 
     public void update() {
         position.x += velocity.x;
         position.y += velocity.y;
         sprite.nextFrame();
+        updateDeath();
+    }
+
+    protected void updateDeath() {
+        if (deathTime != -1 && System.currentTimeMillis() >= deathTime) {
+            finishedDeathAnimation = true;
+            System.out.println("Actual Death Time: " + System.currentTimeMillis());
+        }
     }
 
     public boolean isColliding(Tile tile) {
@@ -41,13 +57,16 @@ public abstract class Entity {
     }
 
     public boolean isColliding(Entity entity) {
-        Rectangle2D.Float bBox1 = new Rectangle2D.Float(getPosition().x,
-                getPosition().y, getSize().x, getSize().y);
+        if (isActive() && entity != null && entity.isActive()) {
+            Rectangle2D.Float bBox1 = new Rectangle2D.Float(getPosition().x,
+                    getPosition().y, getSize().x, getSize().y);
 
-        Rectangle2D.Float bBox2 = new Rectangle2D.Float(entity.getPosition().x,
-                entity.getPosition().y, entity.getSize().x, entity.getSize().y);
+            Rectangle2D.Float bBox2 = new Rectangle2D.Float(entity.getPosition().x,
+                    entity.getPosition().y, entity.getSize().x, entity.getSize().y);
 
-        return rectsColliding(bBox1, bBox2);
+            return rectsColliding(bBox1, bBox2);
+        }
+        return false;
     }
 
     public boolean isContainedBy(Tile tile) {
@@ -76,7 +95,7 @@ public abstract class Entity {
         active = false;
     }
 
-    public boolean getActive() {
+    public boolean isActive() {
         return active;
     }
 
@@ -96,8 +115,16 @@ public abstract class Entity {
         sprite = newSprite;
     }
 
+    public void setDeathSprite(Sprite newSprite) {
+        deathSprite = newSprite;
+    }
+
     public Sprite getSprite() {
         return sprite;
+    }
+
+    public Sprite getDeathSprite() {
+        return deathSprite;
     }
 
     public void setSize(Point newSize) {
@@ -114,5 +141,17 @@ public abstract class Entity {
 
     public void setSpeed(float newSpeed) {
         velocityMag = newSpeed;
+    }
+
+    public void startDeath() {
+        setSprite(deathSprite);
+        deathLengthMillis = deathSprite.getFrameLength() * deathSprite.getFrameCount();
+        finishedDeathAnimation = false;
+        deathTime = System.currentTimeMillis() + deathLengthMillis;
+        System.out.println("Calculated Death Time: " + deathTime);
+    }
+
+    public boolean finishedDying() {
+        return finishedDeathAnimation;
     }
 }

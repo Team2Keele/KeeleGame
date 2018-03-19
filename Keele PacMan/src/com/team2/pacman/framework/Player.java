@@ -5,6 +5,8 @@
  */
 package com.team2.pacman.framework;
 
+import com.team2.pacman.test.TestGame;
+import com.team2.pacman.window.Game;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
 
@@ -15,68 +17,59 @@ import java.awt.geom.Rectangle2D;
 public class Player extends Controllable {
 
     private Powerup currentPower;
-    private int xOffset;
-    private int yOffset;
+    private Game gameInstance;
     private Sprite runningHR, idleR;
 
-    public Player(Map map, Tile currentTile, float relativeSize) throws InvalidStartTileException {
-        super(map, currentTile, relativeSize);
-        runningHR = new Sprite("player-runningHR.png", 16, 4, 4);
-        idleR = new Sprite("player-idleR.png", 16, 4, 4);
+    public Player(Game gameInst, Tile startTile, float relativeSize) throws InvalidStartTileException {
+        super(gameInst.getMapInstance(), startTile, relativeSize);
 
-        super.setSprite(idleR);
-        this.xOffset = (int) (map.getBoundingBox(currentTile).width * ((1 - relativeSize) / 2));
-        this.yOffset = (int) (map.getBoundingBox(currentTile).height * ((1 - relativeSize) / 2));
-
+        gameInstance = gameInst;
+        currentPower = new Powerup(gameInst.getMapInstance(), new Point.Float(0, 0), new Point(0, 0), Powerup.PowerType.NONE);
+        currentPower.deactivate();
+        runningHR = new Sprite("player-runningHR.png", 16, 4, 200);
+        idleR = new Sprite("player-idleR.png", 16, 4, 500);
     }
 
     @Override
     public void update() {
-        position.x += velocity.x;
-        position.y += velocity.y;
+        Enemy[] enemies = gameInstance.getEnemies();
 
-        //set the correct sprite for the players state
-        if(velocity.getX() > 0 || velocity.getX() < 0){
-            setSprite(runningHR);
-        }else{
-            setSprite(idleR);
-        }
-        
-        sprite.nextFrame();
-
-        if (nextTile != null && isColliding(nextTile)) {
-            collide(nextTile);
-        }
+        updatePosition();
 
         if (isAtJunction() && isContainedBy(currentTile) && nextMove != Direction.NONE) {
             turn(nextMove);
         }
 
-        //only case where this could happen is if player left edge
-        //therefore gets looped to other side
-        if (!isColliding(currentTile)) {
-            Rectangle2D.Float nextBBox = tileMap.getBoundingBox(nextTile);
-
-            switch (currentDirection) {
-                case UP:
-                    position.y = nextBBox.y + nextBBox.height - this.yOffset - 5;
-                    break;
-                case DOWN:
-                    position.y = nextBBox.y - nextBBox.height + this.yOffset + 5;
-                    break;
-                case LEFT:
-                    position.x = nextBBox.x + nextBBox.width - this.xOffset - 5;
-                    break;
-                case RIGHT:
-                    position.x = nextBBox.x - nextBBox.width + this.xOffset + 5;
-                    break;
-            }
-
-            currentTile = nextTile;
-            nextTile = tileMap.getTileAdjacent(currentTile, currentDirection);
+        //set the correct sprite for the players state
+        if (velocity.getX() > 0 || velocity.getX() < 0) {
+            setSprite(runningHR);
+        } else {
+            setSprite(idleR);
         }
 
-        //TODO: update powerup
+        sprite.nextFrame();
+
+        if (isColliding(currentTile.getCollectable())) {
+            collide(currentTile.getCollectable());
+        }
+
+        if (currentPower.getType() != Powerup.PowerType.NONE && currentPower.isActive()) {
+            if (currentPower.timerDone()) {
+                debuff();
+            }
+        }
+
+        for (int i = 0; i < enemies.length; i++) {
+            if (isColliding(enemies[i])) {
+                if (enemies[i].isVulnerable()) {
+                    enemies[i].kill();
+                    gameInstance.incrementScore(100);
+                } else {
+                    gameInstance.endGame();
+                }
+            }
+
+        }
     }
 
     @Override
@@ -91,18 +84,48 @@ public class Player extends Controllable {
 
     @Override
     public void collide(Entity entity) {
-
+        if (entity instanceof Acorn) {
+            collect((Acorn) entity);
+            currentTile.removeCollectable();
+        } else {
+            buff((Powerup) entity);
+        }
     }
 
     public void buff(Powerup power) {
+        debuff();
+        switch (power.getType()) {
+            case SPEED:
+                speedMult = 2.0f;
+                break;
+            case SLOW:
+                speedMult = 0.75f;
+                break;
+            case ENEMY_SLOW:
+                gameInstance.setEnemySpeedMult(0.5f);
+                break;
+            case MULTIPLIER:
+                gameInstance.setScoreMult(5);
+                break;
+            case ENEMY_VULNERABLE:
+                gameInstance.setEnemiesVulnerable();
+                break;
+        }
         currentPower = power;
+        currentPower.deactivate();
+        currentPower.startDeath();
     }
 
     public void debuff() {
-
+        currentPower = new Powerup(tileMap, new Point.Float(0, 0), new Point(0, 0), Powerup.PowerType.NONE);
+        speedMult = 1.0f;
+        gameInstance.setEnemySpeedMult(1.0f);
+        gameInstance.setScoreMult(1);
+        gameInstance.setEnemiesInvulnerable();
     }
 
     public void collect(Acorn points) {
-
+        gameInstance.incrementScore(points.getValue());
+        points.deactivate();
     }
 }

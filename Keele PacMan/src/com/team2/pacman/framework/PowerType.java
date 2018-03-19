@@ -11,13 +11,11 @@ import java.util.Random;
  *
  * @author elliott
  */
-public enum PowerType 
-{
+public enum PowerType {
     SPEED, SLOW, ENEMY_SLOW, MULTIPLIER, ENEMY_VULNERABLE;
-    
-    public static PowerType getRandomPower()
-    {
+
+    public static PowerType getRandomPower() {
         Random random = new Random();
-        return values()[random.nextInt(values().length)];
+        return values()[random.nextInt(values().length - 1) + 1];
     }
 }

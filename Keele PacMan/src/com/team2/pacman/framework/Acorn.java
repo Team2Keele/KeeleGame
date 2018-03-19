@@ -5,25 +5,24 @@
  */
 package com.team2.pacman.framework;
 
+import com.team2.pacman.window.Game;
 import java.awt.Point;
 
 /**
  *
  * @author w4u50
  */
-public class Acorn extends Entity
-{
+public class Acorn extends Entity {
+
     private int pointValue;
-    
-    public Acorn(Map map, Point.Float pos, Point size)
-    {
+
+    public Acorn(Map map, Point.Float pos, Point size) {
         super(map, pos, size);
-        super.setSprite(new Sprite("acorn-sheet.png", 16, 4, 4));
+        super.setSprite(new Sprite("acorn-sheet.png", 16, 4, 200));
         pointValue = 10;
     }
-    
-    public int getValue()
-    {
+
+    public int getValue() {
         return pointValue;
     }
 }

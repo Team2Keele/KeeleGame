@@ -9,7 +9,7 @@ public class TestWindow {
         game.setPreferredSize(new Dimension(w, h));
         game.setMaximumSize(new Dimension(w, h));
         game.setMinimumSize(new Dimension(w, h));
-        
+
         JFrame frame = new JFrame(title);
         frame.addKeyListener(game);
         frame.add(game);
@@ -18,7 +18,7 @@ public class TestWindow {
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
-        
+
         game.start();
     }
 }

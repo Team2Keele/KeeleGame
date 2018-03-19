@@ -6,20 +6,52 @@
 package com.team2.pacman.framework;
 
 import java.awt.Point;
+import java.util.Random;
 
-/**
- *
- * @author w4u50
- */
 public class Powerup extends Entity {
 
-    
-    private Sprite explode;
-    
+    private long powerTime;
+    private int timerLength;
+    private PowerType type;
+
+    public static enum PowerType {
+        NONE, SPEED, SLOW, ENEMY_SLOW, MULTIPLIER, ENEMY_VULNERABLE;
+
+        public static PowerType getRandomPower() {
+            Random random = new Random();
+            return values()[random.nextInt(values().length - 1) + 1];
+        }
+    }
+
     public Powerup(Map map, Point.Float pos, Point size) {
         super(map, pos, size);
-        super.setSprite(new Sprite("powerup-sheet.png", 16, 8, 4));
-        //on deactivate set the sprite to this animation and it will die.
-        explode = new Sprite("powerup-explode.png", 16, 8, 8);
+        type = PowerType.getRandomPower();
+        powerTime = -1;
+        timerLength = 10000;
+        setSprite(new Sprite("powerup-sheet.png", 16, 8, 100));
+        setDeathSprite(new Sprite("powerup-explode.png", 16, 8, 50));
+    }
+
+    public Powerup(Map map, Point.Float pos, Point size, PowerType type) {
+        super(map, pos, size);
+        this.type = type;
+        powerTime = -1;
+        timerLength = 10000;
+    }
+
+    public boolean timerDone() {
+        if (powerTime == -1) {
+            powerTime = System.currentTimeMillis() + timerLength;
+        }
+
+        if (System.currentTimeMillis() > powerTime) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public PowerType getType() {
+        return type;
     }
 }

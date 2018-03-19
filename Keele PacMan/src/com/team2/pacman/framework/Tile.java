@@ -10,44 +10,41 @@ import java.awt.geom.Rectangle2D;
  * @author Herbie Bradley
  */
 public class Tile {
-    
+
     private TileType type;
     private Point gridIndex;
     private Entity collectable;
-    
-    public Tile(Point index, TileType type, Entity collectable) 
-    {
+
+    public Tile(Point index, TileType type, Entity collectable) {
         gridIndex = index;
         this.type = type;
         this.collectable = collectable;
     }
-    
-    public Entity getCollectable() 
-    {
+
+    public Entity getCollectable() {
         return collectable;
     }
-    
-    public boolean isWall() 
-    {
+
+    public void removeCollectable() {
+        collectable = null;
+    }
+
+    public boolean isWall() {
         return type == TileType.WALL;
     }
-    
-    public boolean isEdge() 
-    {
+
+    public boolean isEdge() {
         return type == TileType.EDGE;
     }
-    
-    public Point getGridIndex()
-    {
+
+    public Point getGridIndex() {
         return gridIndex;
     }
-    
-    public void testRender(Graphics g, Map m)
-    {
+
+    public void testRender(Graphics g, Map m) {
         Rectangle2D.Float tRect = m.getBoundingBox(this);
-        
-        switch(type)
-        {
+
+        switch (type) {
             case WALL:
                 g.setColor(Color.red);
                 break;
@@ -58,9 +55,9 @@ public class Tile {
                 g.setColor(Color.GREEN);
                 break;
         }
-        
-        g.fillRect((int)tRect.x, (int)tRect.y, (int)tRect.width, (int)tRect.height);
+
+        g.fillRect((int) tRect.x, (int) tRect.y, (int) tRect.width, (int) tRect.height);
         g.setColor(Color.BLACK);
-        g.drawRect((int)tRect.x, (int)tRect.y, (int)tRect.width, (int)tRect.height);
+        g.drawRect((int) tRect.x, (int) tRect.y, (int) tRect.width, (int) tRect.height);
     }
 }

@@ -1,35 +1,32 @@
-
 package com.team2.pacman.framework;
 
 public class Score {
-    
-    protected int score;
-    protected float multi;
-    
-    public Score()
-    {
+
+    private int score;
+    private float multi;
+
+    public Score() {
         score = 0;
         multi = 1;
     }
-    
-    private void increment(int points) {
-        score = score + (int)(points * multi);
+
+    public void increment(int points) {
+        score = score + (int) (points * multi);
     }
-    
-    private void decrement(int points) {
+
+    public void decrement(int points) {
         score = score - points;
-    
     }
-    
-    private int getScore() {
+
+    public int getScore() {
         return score;
     }
-    
-   private void setMulti(float setMulti) { //passed the score multiplier, 
-       multi = setMulti;    
-   }
-   
-   private void reset() {
-       score = 0;    
-   }
+
+    public void setMulti(float multiplier) { //passed the score multiplier, 
+        multi = multiplier;
+    }
+
+    public void reset() {
+        score = 0;
+    }
 }

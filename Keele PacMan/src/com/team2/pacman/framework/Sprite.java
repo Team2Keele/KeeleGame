@@ -17,15 +17,16 @@ public class Sprite {
     private int numOfFrames = 0;
     private int currentFrame = 0;
     private int widthOfSprite = 0;
-    private int frameRate = 1;
-    private int renderCalls = 0;
+    private long nextFrameTime;
+    private int frameLengthMillis;
     private BufferedImage image = null;
     private BufferedImage[] sprites = null;
 
-    public Sprite(String fileName, int widthOfSprite, int numOfFrames, int fps) {
+    public Sprite(String fileName, int widthOfSprite, int numOfFrames, int frameTimeMillis) {
         this.widthOfSprite = widthOfSprite;
         this.numOfFrames = numOfFrames;
-        this.frameRate = fps;
+        frameLengthMillis = frameTimeMillis;
+        nextFrameTime = System.currentTimeMillis() + frameLengthMillis;
 
         //Load spriteSheet
         if (loadImage(fileName)) {
@@ -56,13 +57,10 @@ public class Sprite {
 
     //increments the currentFrame index and loops back to 0 if
     public void nextFrame() {
-        if ((frameRate != 0) & renderCalls >= frameRate) {
+        if (System.currentTimeMillis() >= nextFrameTime) {
             currentFrame = (currentFrame + 1) % numOfFrames;
-            renderCalls = 0;
-        } else {
-            renderCalls++;
+            nextFrameTime = System.currentTimeMillis() + frameLengthMillis;
         }
-
     }
 
     //returns the current frames bufferedImage.
@@ -74,15 +72,30 @@ public class Sprite {
         return image.getSubimage(frame * widthOfSprite, 0, widthOfSprite, image.getHeight());
     }
 
-    public void render(Graphics g, Image img, int x, int y, int xSize, int ySize, boolean flipH, boolean flipV) {
-        if (flipH && flipV) {
-            g.drawImage(img, x + xSize, y + ySize, -xSize, -ySize, null);
-        } else if (flipH && !flipV) {
-            g.drawImage(img, x + xSize, y, -xSize, ySize, null);
-        } else if (!flipH && flipV) {
-            g.drawImage(img, x, y + ySize, xSize, -ySize, null);
-        } else {
-            g.drawImage(img, x, y, xSize, ySize, null);
+    public void render(Graphics g, int x, int y, int xSize, int ySize) {
+        g.drawImage(getCurrentFrame(), x, y, xSize, ySize, null);
+    }
+
+    public int getFrameLength() {
+        return frameLengthMillis;
+    }
+
+    public int getFrameCount() {
+        return numOfFrames;
+    }
+
+    public void render(Graphics g, int x, int y, int xSize, int ySize, Controllable.Direction rotateDir) {
+
+        switch (rotateDir) {
+            case LEFT:
+                g.drawImage(getCurrentFrame(), x + xSize, y, -xSize, ySize, null);
+                break;
+            case UP:
+            case DOWN:
+            case RIGHT:
+            case NONE:
+                g.drawImage(getCurrentFrame(), x, y, xSize, ySize, null);
+                break;
         }
     }
 }
