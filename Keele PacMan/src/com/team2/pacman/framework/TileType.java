@@ -9,7 +9,6 @@ package com.team2.pacman.framework;
  *
  * @author elliott
  */
-public enum TileType 
-{
+public enum TileType {
     NONE, WALL, EDGE;
 }

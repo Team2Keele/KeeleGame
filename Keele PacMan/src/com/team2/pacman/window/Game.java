@@ -36,69 +36,55 @@ public class Game extends Canvas implements Runnable, KeyListener {
     public Game(int windowX, int windowY) {
         initialize(windowX, windowY);
     }
-    
-    private void initialize(int windowX, int windowY)
-    {
-        try
-        {
+
+    private void initialize(int windowX, int windowY) {
+        try {
             this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
             playerSpeed = (gameMap.getTileSize().x * gameMap.getTileSize().y) / 500;
             enemySpeed = playerSpeed * 0.9f;
             gamePlayer = new Player(this, gameMap.getTile(12, 8), 0.9f);
-            gamePlayer.setSprite(new Sprite("player.png", 16, 1));
             gamePlayer.setSpeed(playerSpeed);
-            gameScore = new Score();  
+            gameScore = new Score();
             scoreFont = loadFont(25);
             scoreColor = Color.WHITE;
             scoreTime = System.currentTimeMillis();
             gameMenu = new Menu();
             enemies = new Enemy[]{new Enemy(gameMap, gamePlayer, gameMap.getTile(4, 15), 0.9f),
-                                new Enemy(gameMap, gamePlayer, gameMap.getTile(20, 15), 0.9f), 
-                                new Enemy(gameMap, gamePlayer, gameMap.getTile(4, 20), 0.9f), 
-                                new Enemy(gameMap, gamePlayer, gameMap.getTile(20, 20), 0.9f)};
-            
-            for(int i = 0; i < enemies.length; i++)
-            {
+                new Enemy(gameMap, gamePlayer, gameMap.getTile(20, 15), 0.9f),
+                new Enemy(gameMap, gamePlayer, gameMap.getTile(4, 20), 0.9f),
+                new Enemy(gameMap, gamePlayer, gameMap.getTile(20, 20), 0.9f)};
+
+            for (int i = 0; i < enemies.length; i++) {
                 enemies[i].setSpeed(enemySpeed);
             }
-        }
-        catch(Controllable.InvalidStartTileException e)
-        {
+        } catch (Controllable.InvalidStartTileException e) {
             System.out.print("ERROR: " + e.getMessage() + "\n");
             System.exit(-1);
         }
     }
-    
-    public static Font loadFont(int fontSize)
-    {
-        try
-        {
+
+    public static Font loadFont(int fontSize) {
+        try {
             InputStream is = TestGame.class.getResourceAsStream("../res/" + "pixel_font.ttf");
             return Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.BOLD, fontSize);
-        }
-        catch(FontFormatException | IOException e)
-        {
+        } catch (FontFormatException | IOException e) {
             System.out.print("Error loading custom font");
             return new Font("Times New Roman", Font.BOLD, fontSize);
         }
     }
 
     @Override
-    public void keyReleased(KeyEvent e)
-    {
-        
+    public void keyReleased(KeyEvent e) {
+
     }
-    
+
     @Override
-    public void keyPressed(KeyEvent e) 
-    {
+    public void keyPressed(KeyEvent e) {
         Controllable.Direction playerMove = Controllable.Direction.NONE;
-        
-        switch(e.getKeyCode())
-        {
+
+        switch (e.getKeyCode()) {
             case KeyEvent.VK_SPACE:
-                switch(state)
-                {
+                switch (state) {
                     case START:
                         state = GameState.RUNNING;
                         break;
@@ -114,8 +100,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
                 }
                 break;
             case KeyEvent.VK_ESCAPE:
-                if(state == GameState.PAUSED || state == GameState.START || state == GameState.END)
-                {
+                if (state == GameState.PAUSED || state == GameState.START || state == GameState.END) {
                     System.exit(0);
                 }
                 break;
@@ -123,37 +108,35 @@ public class Game extends Canvas implements Runnable, KeyListener {
             case KeyEvent.VK_UP:
                 playerMove = Controllable.Direction.UP;
                 break;
-            
+
             case KeyEvent.VK_A:
             case KeyEvent.VK_LEFT:
                 playerMove = Controllable.Direction.LEFT;
                 break;
-                
+
             case KeyEvent.VK_S:
             case KeyEvent.VK_DOWN:
                 playerMove = Controllable.Direction.DOWN;
                 break;
-                
+
             case KeyEvent.VK_D:
             case KeyEvent.VK_RIGHT:
                 playerMove = Controllable.Direction.RIGHT;
                 break;
         }
-        
+
         gamePlayer.turn(playerMove);
     }
-    
+
     @Override
-    public void keyTyped(KeyEvent e)
-    {
+    public void keyTyped(KeyEvent e) {
 
     }
-    
-    public void endGame()
-    {
+
+    public void endGame() {
         state = GameState.END;
     }
-    
+
     public synchronized void start() {
         //Stops making multiple threads of one that is already running
         if (running) {
@@ -192,7 +175,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
                 timer += 1000;
                 int fps = frames;
                 int ticks = updates;
-                System.out.println("FPS: " + fps + " TICKS: " + ticks);
+                //System.out.println("FPS: " + fps + " TICKS: " + ticks);
                 updates = 0;
                 frames = 0;
             }
@@ -208,15 +191,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
                 break;
             case RUNNING: //normal game loop
                 gameMenu.update(state);
+                gameMap.update();
                 gamePlayer.update();
-                
-                for(int i = 0; i < enemies.length; i++)
-                {
+
+                for (int i = 0; i < enemies.length; i++) {
                     enemies[i].update();
                 }
-                
-                if(System.currentTimeMillis() > scoreTime + 300)
-                {
+
+                if (System.currentTimeMillis() > scoreTime + 300) {
                     gameScore.increment(1);
                     scoreTime = System.currentTimeMillis();
                 }
@@ -247,76 +229,63 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
         //draw map
         gameMap.render(g);
-        
+
         //draw player and enemies
         gamePlayer.render(g);
-        for(int i = 0; i < enemies.length; i++)
-        {
+        for (int i = 0; i < enemies.length; i++) {
             enemies[i].render(g);
         }
-        
+
         //draw Score
         g.setColor(scoreColor);
         g.setFont(scoreFont);
         g.drawString(gameScore.getScore() + "", 20, 40);
-        
+
         //render Menu
         gameMenu.render(g, this);
-        
+
         g.dispose();
         bs.show();
     }
-    
-    public Enemy[] getEnemies()
-    {
+
+    public Enemy[] getEnemies() {
         return enemies;
     }
-    
-    public Map getMapInstance()
-    {
+
+    public Map getMapInstance() {
         return gameMap;
     }
-    
-    public int getHighScore()
-    {
+
+    public int getHighScore() {
         return 0;
     }
-    
-    public void incrementScore(int inc)
-    {
+
+    public void incrementScore(int inc) {
         gameScore.increment(inc);
     }
-    
-    public int getCurrentScore()
-    {
+
+    public int getCurrentScore() {
         return gameScore.getScore();
     }
-    
-    public void setScoreMult(float multiplier)
-    {
+
+    public void setScoreMult(float multiplier) {
         gameScore.setMulti(multiplier);
     }
-    
-    public void setEnemiesVulnerable()
-    {
-        for(int i = 0; i < enemies.length; i++)
-        {
+
+    public void setEnemiesVulnerable() {
+        for (int i = 0; i < enemies.length; i++) {
             enemies[i].setVulnerable();
         }
     }
-    
-    public void setEnemiesInvulnerable()
-    {
-        for(int i = 0; i < enemies.length; i++)
-        {
+
+    public void setEnemiesInvulnerable() {
+        for (int i = 0; i < enemies.length; i++) {
             enemies[i].setInvulnerable();
         }
     }
-    
-    public void setEnemySpeedMult(float mult)
-    {
-        for(int i = 0; i < enemies.length; i++)
-        {
+
+    public void setEnemySpeedMult(float mult) {
+        for (int i = 0; i < enemies.length; i++) {
             enemies[i].setSpeedMult(mult);
         }
     }
@@ -327,13 +296,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
         //set the game state to start again
         state = GameState.START;
     }
-    
+
     public static void main(String args[]) {
 
         int windowSizeX = 1000;
         int windowSizeY = 1000;
         Game game = new Game(windowSizeX, windowSizeY);
-        
+
         Window window = new Window(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
 
     }

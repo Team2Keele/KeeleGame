@@ -17,12 +17,16 @@ public class Sprite {
     private int numOfFrames = 0;
     private int currentFrame = 0;
     private int widthOfSprite = 0;
+    private long nextFrameTime;
+    private int frameLengthMillis;
     private BufferedImage image = null;
     private BufferedImage[] sprites = null;
 
-    public Sprite(String fileName, int widthOfSprite, int numOfFrames) {
+    public Sprite(String fileName, int widthOfSprite, int numOfFrames, int frameTimeMillis) {
         this.widthOfSprite = widthOfSprite;
         this.numOfFrames = numOfFrames;
+        frameLengthMillis = frameTimeMillis;
+        nextFrameTime = System.currentTimeMillis() + frameLengthMillis;
 
         //Load spriteSheet
         if (loadImage(fileName)) {
@@ -53,7 +57,10 @@ public class Sprite {
 
     //increments the currentFrame index and loops back to 0 if
     public void nextFrame() {
-        currentFrame = (currentFrame + 1) % numOfFrames;
+        if (System.currentTimeMillis() >= nextFrameTime) {
+            currentFrame = (currentFrame + 1) % numOfFrames;
+            nextFrameTime = System.currentTimeMillis() + frameLengthMillis;
+        }
     }
 
     //returns the current frames bufferedImage.
@@ -67,5 +74,28 @@ public class Sprite {
 
     public void render(Graphics g, int x, int y, int xSize, int ySize) {
         g.drawImage(getCurrentFrame(), x, y, xSize, ySize, null);
+    }
+
+    public int getFrameLength() {
+        return frameLengthMillis;
+    }
+
+    public int getFrameCount() {
+        return numOfFrames;
+    }
+
+    public void render(Graphics g, int x, int y, int xSize, int ySize, Controllable.Direction rotateDir) {
+
+        switch (rotateDir) {
+            case LEFT:
+                g.drawImage(getCurrentFrame(), x + xSize, y, -xSize, ySize, null);
+                break;
+            case UP:
+            case DOWN:
+            case RIGHT:
+            case NONE:
+                g.drawImage(getCurrentFrame(), x, y, xSize, ySize, null);
+                break;
+        }
     }
 }
