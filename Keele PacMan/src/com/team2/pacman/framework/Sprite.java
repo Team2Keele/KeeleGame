@@ -6,14 +6,16 @@
 package com.team2.pacman.framework;
 
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.URL;
+import java.util.HashMap;
 import javax.imageio.ImageIO;
 
 public class Sprite {
 
+    private static HashMap<String, BufferedImage[]> loadedSprites = new HashMap();
+    
     private int numOfFrames = 0;
     private int currentFrame = 0;
     private int widthOfSprite = 0;
@@ -28,13 +30,21 @@ public class Sprite {
         frameLengthMillis = frameTimeMillis;
         nextFrameTime = System.currentTimeMillis() + frameLengthMillis;
 
-        //Load spriteSheet
-        if (loadImage(fileName)) {
-            //split all sprites into the sprites array.
-            sprites = new BufferedImage[numOfFrames];
-            for (int frame = 0; frame < numOfFrames; frame++) {
-                sprites[frame] = getSpriteSheetSubImage(frame);
+        if(!loadedSprites.containsKey(fileName))
+        {
+            //Load spriteSheet
+            if (loadImage(fileName)) {
+                //split all sprites into the sprites array.
+                sprites = new BufferedImage[numOfFrames];
+                for (int frame = 0; frame < numOfFrames; frame++) {
+                    sprites[frame] = getSpriteSheetSubImage(frame);
+                }
+                loadedSprites.put(fileName, sprites);
             }
+        }
+        else
+        {
+            sprites = loadedSprites.get(fileName);
         }
     }
 

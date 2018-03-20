@@ -45,7 +45,6 @@ public abstract class Entity {
     protected void updateDeath() {
         if (deathTime != -1 && System.currentTimeMillis() >= deathTime) {
             finishedDeathAnimation = true;
-            System.out.println("Actual Death Time: " + System.currentTimeMillis());
         }
     }
 
@@ -148,7 +147,6 @@ public abstract class Entity {
         deathLengthMillis = deathSprite.getFrameLength() * deathSprite.getFrameCount();
         finishedDeathAnimation = false;
         deathTime = System.currentTimeMillis() + deathLengthMillis;
-        System.out.println("Calculated Death Time: " + deathTime);
     }
 
     public boolean finishedDying() {
