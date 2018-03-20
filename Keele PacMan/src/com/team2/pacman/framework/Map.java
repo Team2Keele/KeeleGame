@@ -72,7 +72,10 @@ public class Map {
 
         try {
             URL url = this.getClass().getResource("../res/" + mapFile);
-            File file = new File(url.toURI());
+            String rawPath = url.getPath().replaceAll("//", "\\\\\\\\");
+            rawPath = rawPath.replaceAll("/", "\\\\");
+            rawPath = rawPath.replaceAll("%20", " ");
+            File file = new File(rawPath);
 
             FileReader fileReader = new FileReader(file);
 
@@ -136,8 +139,6 @@ public class Map {
             System.out.println(
                     "Error reading file '"
                     + mapFile + "'");
-        } catch (URISyntaxException ex) {
-
         }
     }
     
