@@ -39,7 +39,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     private void initialize(int windowX, int windowY) {
         try {
-            this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
+            if(gameMap != null)
+            {
+                gameMap.respawnCollectables();
+            }
+            else
+            {
+                this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
+            }
+            
             playerSpeed = (gameMap.getTileSize().x * gameMap.getTileSize().y) / 500;
             enemySpeed = playerSpeed * 0.9f;
             gamePlayer = new Player(this, gameMap.getTile(12, 8), 0.9f);

@@ -140,6 +140,42 @@ public class Map {
 
         }
     }
+    
+    public void respawnCollectables()
+    {
+        Random rand = new Random();
+
+        TileType type;
+        float xPos;
+        float yPos;
+        Point entitySize;
+        Point.Float entityPos;
+        float percentOffset = 0.8f;
+        Entity tileCollectable;
+        
+        for(int y = 0; y < grid.length; y++) {
+                for (int x = 0; x < grid[0].length; x++) {
+
+                    xPos = (x * tileSize.x) + (tileSize.x * ((1 - percentOffset) / 2));
+                    yPos = (y * tileSize.y) + (tileSize.y * ((1 - percentOffset) / 2));
+
+                    entityPos = new Point.Float(xPos, yPos);
+                    entitySize = new Point((int) (tileSize.x * percentOffset), (int) (tileSize.y * percentOffset));
+                    tileCollectable = null;
+
+                    if (rand.nextFloat() > 0.95 && !grid[x][y].isWall()) //chance to place a powerup rather than an acorn
+                    {
+                        //blocked by Powerup class
+                        tileCollectable = new Powerup(this, entityPos, entitySize);
+                    } else if (!grid[x][y].isWall()) {
+                        //blocked by Acorn class
+                        tileCollectable = new Acorn(this, entityPos, entitySize);
+                    }
+
+                    grid[x][y].setCollectable(tileCollectable);
+                }
+            }
+    }
 
     public Tile getTileAdjacent(Tile tile, Direction adjacentDir) {
         int xIncrement = 0;
