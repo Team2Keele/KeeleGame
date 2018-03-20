@@ -39,7 +39,15 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     private void initialize(int windowX, int windowY) {
         try {
-            this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
+            if(gameMap != null)
+            {
+                gameMap.respawnCollectables();
+            }
+            else
+            {
+                this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
+            }
+            
             playerSpeed = (gameMap.getTileSize().x * gameMap.getTileSize().y) / 500;
             enemySpeed = playerSpeed * 0.9f;
             gamePlayer = new Player(this, gameMap.getTile(12, 8), 0.9f);
@@ -48,7 +56,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
             scoreFont = loadFont(25);
             scoreColor = Color.WHITE;
             scoreTime = System.currentTimeMillis();
-            gameMenu = new Menu();
+            gameMenu = new Menu(this);
             enemies = new Enemy[]{new Enemy(gameMap, gamePlayer, gameMap.getTile(4, 15), 0.9f),
                 new Enemy(gameMap, gamePlayer, gameMap.getTile(20, 15), 0.9f),
                 new Enemy(gameMap, gamePlayer, gameMap.getTile(4, 20), 0.9f),

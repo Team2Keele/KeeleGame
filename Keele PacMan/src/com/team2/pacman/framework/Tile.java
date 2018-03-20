@@ -60,4 +60,9 @@ public class Tile {
 
         sprite.render(g, gridIndex.x * tileSize.x, gridIndex.y * tileSize.y, tileSize.x, tileSize.y);
     }
+    
+    public void setCollectable(Entity newCollectable)
+    {
+        collectable = newCollectable;
+    }
 }
