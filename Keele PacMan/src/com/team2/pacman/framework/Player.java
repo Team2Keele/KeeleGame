@@ -5,7 +5,6 @@
  */
 package com.team2.pacman.framework;
 
-import com.team2.pacman.test.TestGame;
 import com.team2.pacman.window.Game;
 import java.awt.Point;
 import java.awt.geom.Rectangle2D;
@@ -92,7 +91,7 @@ public class Player extends Controllable {
     public void collide(Entity entity) {
         if (entity instanceof Acorn) {
             collect((Acorn) entity);
-            currentTile.removeCollectable();
+            currentTile.getCollectable().startDeath();
         } else {
             buff((Powerup) entity);
         }

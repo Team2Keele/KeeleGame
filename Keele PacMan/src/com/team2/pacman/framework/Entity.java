@@ -116,6 +116,7 @@ public abstract class Entity {
 
     public void setDeathSprite(Sprite newSprite) {
         deathSprite = newSprite;
+        deathSprite.setRepeat(false);
     }
 
     public Sprite getSprite() {

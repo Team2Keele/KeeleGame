@@ -5,7 +5,6 @@
  */
 package com.team2.pacman.framework;
 
-import com.team2.pacman.test.TestGame;
 import com.team2.pacman.window.Game;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -26,6 +25,7 @@ public class Menu {
     private Sprite startSplashScreen;
     private Sprite pausedSplashScreen;
     private Sprite endSplashScreen;
+    private Sprite winSplashScreen;
     private Font messageFont;
     private Game.GameState currentState;
     private Game gameInst;
@@ -39,6 +39,7 @@ public class Menu {
         startSplashScreen = new Sprite("startScreen.png", 1000, 1, 0);
         pausedSplashScreen = new Sprite("pausedscreen.png", 1000, 1, 0);
         endSplashScreen = new Sprite("endscreen.png", 1000, 1, 0);
+        winSplashScreen = new Sprite("winscreen.png", 1000, 1, 0);
         currentState = Game.GameState.START;
         gameInst = game;
     }
@@ -68,6 +69,10 @@ public class Menu {
                 endSplashScreen.render(g2, 0, 0, gameInstance.getWidth(), gameInstance.getHeight());
                 drawOptions(g2, restartString, exitString);
                 break;
+            case WON:
+                winSplashScreen.render(g2, 0, 0, gameInstance.getWidth(), gameInstance.getHeight());
+                drawOptions(g2, restartString, exitString);
+                break;
         }
         
         if(currentState != Game.GameState.RUNNING)
@@ -86,9 +91,5 @@ public class Menu {
         
         g2.drawString(str1, middleX - (int)(bounds1.getWidth() / 2), middleY - (int)(bounds1.getHeight() / 2));
         g2.drawString(exitString, middleX - (int)(bounds2.getWidth() / 2), middleY - (int)(bounds2.getHeight() / 2) + (int)(bounds2.getHeight() * 1.5));
-    }
-
-    public void update(TestGame.GameState state) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

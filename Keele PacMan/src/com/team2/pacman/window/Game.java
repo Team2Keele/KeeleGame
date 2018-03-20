@@ -1,9 +1,6 @@
 package com.team2.pacman.window;
 
 import com.team2.pacman.framework.*;
-import com.team2.pacman.test.TestGame;
-import static com.team2.pacman.test.TestGame.VERSION;
-import com.team2.pacman.test.TestWindow;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Font;
@@ -50,7 +47,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
                 this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
             }
             
-            playerSpeed = (gameMap.getTileSize().x * gameMap.getTileSize().y) / 500;
+            playerSpeed = ((gameMap.getTileSize().x + gameMap.getTileSize().y) / 2) * 0.06f;
             enemySpeed = playerSpeed * 0.9f;
             gamePlayer = new Player(this, gameMap.getTile(12, 8), 0.9f);
             gamePlayer.setSpeed(playerSpeed);
@@ -75,7 +72,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     public static Font loadFont(int fontSize) {
         try {
-            InputStream is = TestGame.class.getResourceAsStream("../res/" + "pixel_font.ttf");
+            InputStream is = Game.class.getResourceAsStream("../res/" + "pixel_font.ttf");
             return Font.createFont(Font.TRUETYPE_FONT, is).deriveFont(Font.BOLD, fontSize);
         } catch (FontFormatException | IOException e) {
             System.out.print("Error loading custom font");
@@ -106,6 +103,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
                         case PAUSED:
                             state = GameState.RUNNING;
                             break;
+                        case WON:
                         case END:
                             allowKeyPress = false;
                             reset();
@@ -202,11 +200,9 @@ public class Game extends Canvas implements Runnable, KeyListener {
         //TODO handle the changes of game states and the updates of every tick of each entity and collision
         switch (state) {
             case START: //handle the start of the game / menu stuff
-                gameMenu.update(state);
                 allowKeyPress = true;
                 break;
             case RUNNING: //normal game loop
-                gameMenu.update(state);
                 gameMap.update();
                 gamePlayer.update();
 
@@ -218,16 +214,20 @@ public class Game extends Canvas implements Runnable, KeyListener {
                     gameScore.increment(1);
                     scoreTime = System.currentTimeMillis();
                 }
+                
+                if(gameMap.allCollectablesCollected())
+                {
+                    state = GameState.WON;
+                }
                 break;
             case PAUSED:
-                gameMenu.update(state);
                 break;
             case END: //handle the finishing of the game / win or lose.
-                gameMenu.update(state);
                 break;
             default:
                 break;
         }
+        gameMenu.update(state);
     }
 
     private void render() {
@@ -324,6 +324,6 @@ public class Game extends Canvas implements Runnable, KeyListener {
     }
 
     public enum GameState {
-        START, RUNNING, PAUSED, END;
+        START, RUNNING, PAUSED, END, WON;
     }
 }

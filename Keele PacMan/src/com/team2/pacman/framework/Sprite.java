@@ -21,6 +21,7 @@ public class Sprite {
     private int widthOfSprite = 0;
     private long nextFrameTime;
     private int frameLengthMillis;
+    boolean repeat;
     private BufferedImage image = null;
     private BufferedImage[] sprites = null;
 
@@ -29,6 +30,7 @@ public class Sprite {
         this.numOfFrames = numOfFrames;
         frameLengthMillis = frameTimeMillis;
         nextFrameTime = System.currentTimeMillis() + frameLengthMillis;
+        repeat = true;
 
         if(!loadedSprites.containsKey(fileName))
         {
@@ -68,7 +70,16 @@ public class Sprite {
     //increments the currentFrame index and loops back to 0 if
     public void nextFrame() {
         if (System.currentTimeMillis() >= nextFrameTime) {
-            currentFrame = (currentFrame + 1) % numOfFrames;
+            currentFrame++;
+            if(repeat)
+            {
+                currentFrame = currentFrame % numOfFrames;
+            }
+            else if(currentFrame == numOfFrames)
+            {
+                currentFrame--;
+            }
+            
             nextFrameTime = System.currentTimeMillis() + frameLengthMillis;
         }
     }
@@ -107,5 +118,10 @@ public class Sprite {
                 g.drawImage(getCurrentFrame(), x, y, xSize, ySize, null);
                 break;
         }
+    }
+    
+    public void setRepeat(boolean repeat)
+    {
+        this.repeat = repeat;
     }
 }

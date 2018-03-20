@@ -28,6 +28,7 @@ public class Map {
     private Sprite bgImage;
     private Point tileSize;
     private Point gridLength;
+    private int collectableCount;
     private int windowX;
     private int windowY;
 
@@ -37,6 +38,7 @@ public class Map {
         this.windowX = windowX;
         this.windowY = windowY;
         tileSize = new Point(0, 0);
+        collectableCount = 0;
         loadMap(mapFile);
     }
 
@@ -61,6 +63,7 @@ public class Map {
                     tile.getCollectable().update();
                     if (tile.getCollectable().finishedDying()) {
                         tile.removeCollectable();
+                        collectableCount--;
                     }
                 }
             }
@@ -95,7 +98,7 @@ public class Map {
             Point.Float entityPos;
             float percentOffset = 0.8f;
             Entity tileCollectable;
-
+            
             int y = 0;
             while ((line = br.readLine()) != null) {
                 for (int x = 0; x < line.length(); x++) {
@@ -120,11 +123,13 @@ public class Map {
                     {
                         //blocked by Powerup class
                         tileCollectable = new Powerup(this, entityPos, entitySize);
+                        collectableCount++;
                     } else if (type != TileType.WALL) {
                         //blocked by Acorn class
                         tileCollectable = new Acorn(this, entityPos, entitySize);
+                        collectableCount++;
                     }
-
+                    
                     grid[x][y] = new Tile(new Point(x, y), type, tileSize, tileCollectable);
                 }
                 y++;
@@ -145,7 +150,9 @@ public class Map {
     public void respawnCollectables()
     {
         Random rand = new Random();
-
+        
+        collectableCount = 0;
+        
         TileType type;
         float xPos;
         float yPos;
@@ -168,9 +175,11 @@ public class Map {
                     {
                         //blocked by Powerup class
                         tileCollectable = new Powerup(this, entityPos, entitySize);
+                        collectableCount++;
                     } else if (!grid[x][y].isWall()) {
                         //blocked by Acorn class
                         tileCollectable = new Acorn(this, entityPos, entitySize);
+                        collectableCount++;
                     }
 
                     grid[x][y].setCollectable(tileCollectable);
@@ -252,5 +261,10 @@ public class Map {
 
     public void setTileSize(Point newTileSize) {
         tileSize = newTileSize;
+    }
+    
+    public boolean allCollectablesCollected()
+    {
+        return collectableCount == 0;
     }
 }
