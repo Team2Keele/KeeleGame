@@ -17,6 +17,7 @@ public class Window {
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(false);
         frame.setLocationRelativeTo(null);
+        frame.setFocusable(true);
         frame.setVisible(true);
 
         game.start();

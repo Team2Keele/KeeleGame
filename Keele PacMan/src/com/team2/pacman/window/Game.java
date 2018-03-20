@@ -32,6 +32,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private Enemy[] enemies;
     private float playerSpeed;
     private float enemySpeed;
+    private boolean allowKeyPress;
 
     public Game(int windowX, int windowY) {
         initialize(windowX, windowY);
@@ -39,6 +40,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
 
     private void initialize(int windowX, int windowY) {
         try {
+            allowKeyPress = true;
             if(gameMap != null)
             {
                 gameMap.respawnCollectables();
@@ -89,51 +91,55 @@ public class Game extends Canvas implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         Controllable.Direction playerMove = Controllable.Direction.NONE;
+        
+        if(allowKeyPress)
+        {
+            switch (e.getKeyCode()) {
+                case KeyEvent.VK_SPACE:
+                    switch (state) {
+                        case START:
+                            state = GameState.RUNNING;
+                            break;
+                        case RUNNING:
+                            state = GameState.PAUSED;
+                            break;
+                        case PAUSED:
+                            state = GameState.RUNNING;
+                            break;
+                        case END:
+                            allowKeyPress = false;
+                            reset();
+                            break;
+                    }
+                    break;
+                case KeyEvent.VK_ESCAPE:
+                    if (state == GameState.PAUSED || state == GameState.START || state == GameState.END) {
+                        System.exit(0);
+                    }
+                    break;
+                case KeyEvent.VK_W:
+                case KeyEvent.VK_UP:
+                    playerMove = Controllable.Direction.UP;
+                    break;
 
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_SPACE:
-                switch (state) {
-                    case START:
-                        state = GameState.RUNNING;
-                        break;
-                    case RUNNING:
-                        state = GameState.PAUSED;
-                        break;
-                    case PAUSED:
-                        state = GameState.RUNNING;
-                        break;
-                    case END:
-                        reset();
-                        break;
-                }
-                break;
-            case KeyEvent.VK_ESCAPE:
-                if (state == GameState.PAUSED || state == GameState.START || state == GameState.END) {
-                    System.exit(0);
-                }
-                break;
-            case KeyEvent.VK_W:
-            case KeyEvent.VK_UP:
-                playerMove = Controllable.Direction.UP;
-                break;
+                case KeyEvent.VK_A:
+                case KeyEvent.VK_LEFT:
+                    playerMove = Controllable.Direction.LEFT;
+                    break;
 
-            case KeyEvent.VK_A:
-            case KeyEvent.VK_LEFT:
-                playerMove = Controllable.Direction.LEFT;
-                break;
+                case KeyEvent.VK_S:
+                case KeyEvent.VK_DOWN:
+                    playerMove = Controllable.Direction.DOWN;
+                    break;
 
-            case KeyEvent.VK_S:
-            case KeyEvent.VK_DOWN:
-                playerMove = Controllable.Direction.DOWN;
-                break;
+                case KeyEvent.VK_D:
+                case KeyEvent.VK_RIGHT:
+                    playerMove = Controllable.Direction.RIGHT;
+                    break;
+            }
 
-            case KeyEvent.VK_D:
-            case KeyEvent.VK_RIGHT:
-                playerMove = Controllable.Direction.RIGHT;
-                break;
+            gamePlayer.turn(playerMove);
         }
-
-        gamePlayer.turn(playerMove);
     }
 
     @Override
@@ -152,13 +158,14 @@ public class Game extends Canvas implements Runnable, KeyListener {
         }
         //if the game is not already running then start a new thread
         running = true;
-
+ 
         thread = new Thread(this);
         thread.start();
     }
-
+ 
     @Override
     public void run() {
+        setFocusable(false);
         long lastTime = System.nanoTime();
         double amountOfUpdates = 60.0;
         double ns = 1000000000 / amountOfUpdates;
@@ -196,6 +203,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
         switch (state) {
             case START: //handle the start of the game / menu stuff
                 gameMenu.update(state);
+                allowKeyPress = true;
                 break;
             case RUNNING: //normal game loop
                 gameMenu.update(state);
