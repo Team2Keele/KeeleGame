@@ -48,7 +48,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
             scoreFont = loadFont(25);
             scoreColor = Color.WHITE;
             scoreTime = System.currentTimeMillis();
-            gameMenu = new Menu();
+            gameMenu = new Menu(this);
             enemies = new Enemy[]{new Enemy(gameMap, gamePlayer, gameMap.getTile(4, 15), 0.9f),
                 new Enemy(gameMap, gamePlayer, gameMap.getTile(20, 15), 0.9f),
                 new Enemy(gameMap, gamePlayer, gameMap.getTile(4, 20), 0.9f),
