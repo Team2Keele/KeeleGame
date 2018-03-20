@@ -46,7 +46,7 @@ public class Map {
         for (int x = 0; x < grid.length; x++) {
             for (int y = 0; y < grid[0].length; y++) {
                 Entity collectable = grid[x][y].getCollectable();
-                grid[x][y].testRender(g, this);
+                grid[x][y].render(g);
                 if (collectable != null) {
                     collectable.render(g);
                 }
@@ -122,7 +122,7 @@ public class Map {
                         tileCollectable = new Acorn(this, entityPos, entitySize);
                     }
 
-                    grid[x][y] = new Tile(new Point(x, y), type, tileCollectable);
+                    grid[x][y] = new Tile(new Point(x, y), type, tileSize, tileCollectable);
                 }
                 y++;
             }

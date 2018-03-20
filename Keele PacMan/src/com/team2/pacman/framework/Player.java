@@ -18,7 +18,7 @@ public class Player extends Controllable {
 
     private Powerup currentPower;
     private Game gameInstance;
-    private Sprite runningHR, idleR;
+    private Sprite runningHR, idleR, runningUp, runningDown;
 
     public Player(Game gameInst, Tile startTile, float relativeSize) throws InvalidStartTileException {
         super(gameInst.getMapInstance(), startTile, relativeSize);
@@ -26,8 +26,10 @@ public class Player extends Controllable {
         gameInstance = gameInst;
         currentPower = new Powerup(gameInst.getMapInstance(), new Point.Float(0, 0), new Point(0, 0), Powerup.PowerType.NONE);
         currentPower.deactivate();
-        runningHR = new Sprite("player-runningHR.png", 16, 4, 200);
-        idleR = new Sprite("player-idleR.png", 16, 4, 500);
+        runningHR = new Sprite("player-runningHR.png", 16, 4, 100);
+        idleR = new Sprite("player-idleR.png", 16, 4, 100);
+        runningUp = new Sprite("player-runningUp.png", 16, 4, 100);
+        runningDown = new Sprite("player-runningDown.png", 16, 4, 100);
     }
 
     @Override
@@ -43,7 +45,11 @@ public class Player extends Controllable {
         //set the correct sprite for the players state
         if (velocity.getX() > 0 || velocity.getX() < 0) {
             setSprite(runningHR);
-        } else {
+        } else if (velocity.getY() < 0) {
+            setSprite(runningUp);
+        } else if (velocity.getY() > 0){
+            setSprite(runningDown);
+        }else{
             setSprite(idleR);
         }
 

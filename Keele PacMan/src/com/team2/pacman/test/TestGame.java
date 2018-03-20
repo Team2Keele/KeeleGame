@@ -298,8 +298,8 @@ public class TestGame extends Canvas implements Runnable, KeyListener {
 
     public static void main(String args[]) {
 
-        int windowSizeX = 1000;
-        int windowSizeY = 1000;
+        int windowSizeX = 800;
+        int windowSizeY = 760;
         TestGame game = new TestGame(windowSizeX, windowSizeY);
 
         TestWindow window = new TestWindow(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
