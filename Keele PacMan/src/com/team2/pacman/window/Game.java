@@ -111,8 +111,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
                     }
                     break;
                 case KeyEvent.VK_ESCAPE:
-                    if (state == GameState.PAUSED || state == GameState.START || state == GameState.END) {
-                        System.exit(0);
+                    switch(state) {
+                        case START:
+                        case PAUSED:
+                        case WON:
+                        case END:
+                            System.exit(0);
+                            
                     }
                     break;
                 case KeyEvent.VK_W:
