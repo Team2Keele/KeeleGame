@@ -13,6 +13,7 @@ public class Enemy extends Controllable {
     
     public Enemy(Map map, Player player, Tile startTile, float relativeSize) throws InvalidStartTileException {
         super(map, startTile, relativeSize);
+        setDeathSprite(new Sprite("enemy-idleR.png", 16, 4, 500));
         gamePlayer = player;
         this.startTile = startTile;
         isVulnerable = false;

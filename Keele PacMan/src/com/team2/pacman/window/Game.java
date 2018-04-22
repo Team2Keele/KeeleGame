@@ -319,7 +319,7 @@ public class Game extends Canvas implements Runnable, KeyListener {
         int windowSizeY = 1000;
         Game game = new Game(windowSizeX, windowSizeY);
 
-        Window window = new Window(windowSizeX, windowSizeY, "Keele PacMan ver: " + VERSION, game);
+        Window window = new Window(windowSizeX - 10, windowSizeY - 10, "Keele PacMan ver: " + VERSION, game);
 
     }
 
