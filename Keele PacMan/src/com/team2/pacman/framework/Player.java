@@ -44,7 +44,7 @@ public class Player extends Controllable {
             collide(currentTile.getCollectable());
         }
 
-        if (currentPower.getType() != Powerup.PowerType.NONE && currentPower.isActive()) {
+        if (currentPower.getType() != Powerup.PowerType.NONE) {
             if (currentPower.timerDone()) {
                 debuff();
             }
