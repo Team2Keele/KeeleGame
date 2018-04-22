@@ -5,7 +5,10 @@
  */
 package com.team2.pacman.framework;
 
+import java.awt.Color;
 import java.awt.Point;
+import java.awt.image.BufferedImage;
+import java.awt.image.WritableRaster;
 import java.util.Random;
 
 public class Powerup extends Entity {
@@ -28,8 +31,26 @@ public class Powerup extends Entity {
         type = PowerType.getRandomPower();
         powerTime = -1;
         timerLength = 10000;
-        setSprite(new Sprite("powerup-sheet.png", 16, 8, 100));
-        setDeathSprite(new Sprite("powerup-explode.png", 16, 8, 50));
+
+        switch (type) {
+            case SPEED:
+                super.setSprite(new Sprite("powerup-speed.png", 16, 8, 100));
+                break;
+            case SLOW:
+                super.setSprite(new Sprite("powerup-slow.png", 16, 8, 100));
+                break;
+            case ENEMY_SLOW:
+                super.setSprite(new Sprite("powerup-enemyslow.png", 16, 8, 100));
+                break;
+            case MULTIPLIER:
+                super.setSprite(new Sprite("powerup-multi.png", 16, 8, 100));
+                break;
+            case ENEMY_VULNERABLE:
+                super.setSprite(new Sprite("powerup-vun.png", 16, 8, 100));
+                break;
+        }
+
+        super.setDeathSprite(new Sprite("powerup-explode.png", 16, 8, 50));
     }
 
     public Powerup(Map map, Point.Float pos, Point size, PowerType type) {
