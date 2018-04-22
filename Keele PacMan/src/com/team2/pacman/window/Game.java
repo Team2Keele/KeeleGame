@@ -38,15 +38,12 @@ public class Game extends Canvas implements Runnable, KeyListener {
     private void initialize(int windowX, int windowY) {
         try {
             allowKeyPress = true;
-            if(gameMap != null)
-            {
+            if (gameMap != null) {
                 gameMap.respawnCollectables();
-            }
-            else
-            {
+            } else {
                 this.gameMap = new Map("testmap.txt", "map.png", windowX, windowY);
             }
-            
+
             playerSpeed = ((gameMap.getTileSize().x + gameMap.getTileSize().y) / 2) * 0.06f;
             enemySpeed = playerSpeed * 0.9f;
             gamePlayer = new Player(this, gameMap.getTile(12, 8), 0.9f);
@@ -88,9 +85,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
     @Override
     public void keyPressed(KeyEvent e) {
         Controllable.Direction playerMove = Controllable.Direction.NONE;
-        
-        if(allowKeyPress)
-        {
+
+        if (allowKeyPress) {
             switch (e.getKeyCode()) {
                 case KeyEvent.VK_SPACE:
                     switch (state) {
@@ -111,13 +107,13 @@ public class Game extends Canvas implements Runnable, KeyListener {
                     }
                     break;
                 case KeyEvent.VK_ESCAPE:
-                    switch(state) {
+                    switch (state) {
                         case START:
                         case PAUSED:
                         case WON:
                         case END:
                             System.exit(0);
-                            
+
                     }
                     break;
                 case KeyEvent.VK_W:
@@ -161,11 +157,11 @@ public class Game extends Canvas implements Runnable, KeyListener {
         }
         //if the game is not already running then start a new thread
         running = true;
- 
+
         thread = new Thread(this);
         thread.start();
     }
- 
+
     @Override
     public void run() {
         setFocusable(false);
@@ -219,9 +215,8 @@ public class Game extends Canvas implements Runnable, KeyListener {
                     gameScore.increment(1);
                     scoreTime = System.currentTimeMillis();
                 }
-                
-                if(gameMap.allCollectablesCollected())
-                {
+
+                if (gameMap.allCollectablesCollected()) {
                     state = GameState.WON;
                 }
                 break;

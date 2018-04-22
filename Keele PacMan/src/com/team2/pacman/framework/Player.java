@@ -7,7 +7,6 @@ package com.team2.pacman.framework;
 
 import com.team2.pacman.window.Game;
 import java.awt.Point;
-import java.awt.geom.Rectangle2D;
 
 /**
  *
@@ -41,19 +40,6 @@ public class Player extends Controllable {
             turn(nextMove);
         }
 
-        //set the correct sprite for the players state
-        if (velocity.getX() > 0 || velocity.getX() < 0) {
-            setSprite(runningHR);
-        } else if (velocity.getY() < 0) {
-            setSprite(runningUp);
-        } else if (velocity.getY() > 0){
-            setSprite(runningDown);
-        }else{
-            setSprite(idleR);
-        }
-
-        sprite.nextFrame();
-
         if (isColliding(currentTile.getCollectable())) {
             collide(currentTile.getCollectable());
         }
@@ -73,8 +59,20 @@ public class Player extends Controllable {
                     gameInstance.endGame();
                 }
             }
-
         }
+
+        
+        if (velocity.getX() > 0 || velocity.getX() < 0) {
+            setSprite(runningHR);
+        } else if (velocity.getY() < 0) {
+            setSprite(runningUp);
+        } else if (velocity.getY() > 0) {
+            setSprite(runningDown);
+        } else {
+            setSprite(idleR);
+        }
+
+        sprite.nextFrame();
     }
 
     @Override
